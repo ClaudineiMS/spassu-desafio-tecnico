@@ -1,19 +1,16 @@
 from rest_framework import serializers
-from .models import Vendedor
+from .models import Cliente, Vendedor
 
 class VendedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendedor
         fields = [
             'id',
-            'usuario',
             'nome',
             'email',
             'telefone',
         ]
-        read_only_fields = [
-            'id',
-        ]
+        read_only_fields = ['id']
 
     def validate_nome(self, value):
         nome = value.strip()
@@ -32,3 +29,35 @@ class VendedorSerializer(serializers.ModelSerializer):
         if not email:
             raise serializers.ValidationError('O e-mail do vendedor é obrigatório.')
         return email
+
+
+
+
+class ClienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cliente
+        fields = [
+            'id',
+            'nome',
+            'email',
+            'telefone',
+        ]
+        read_only_fields = ['id']
+
+    def validate_nome(self, value):
+        nome = value.strip()
+        if not nome:
+            raise serializers.ValidationError('O nome do cliente é obrigatório.')
+        return nome
+
+    def validate_email(self, value):
+        email = value.strip().lower()
+        if not email:
+            raise serializers.ValidationError('O e-mail do cliente é obrigatório.')
+        return email
+
+    def validate_telefone(self, value):
+        telefone = value.strip()
+        if not telefone:
+            raise serializers.ValidationError('O telefone do cliente é obrigatório.')
+        return telefone
