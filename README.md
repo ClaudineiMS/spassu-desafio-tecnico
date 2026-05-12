@@ -31,7 +31,7 @@ Para executar o projeto localmente no Linux, é necessário ter instalado:
 Crie o ambiente virtual:
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 ```
 
 Ative o ambiente virtual:
