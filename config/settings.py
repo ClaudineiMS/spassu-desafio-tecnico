@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
-    
+    'drf_spectacular',
     'vendas'
 ]
 
@@ -79,6 +79,17 @@ REST_FRAMEWORK = {
         'anon': config('DRF_THROTTLE_ANON_RATE', default='100/hour'),  # Anônimo: 100 requisições por hora
         'user': config('DRF_THROTTLE_USER_RATE', default='1000/hour'), # Autenticado: 1000 requisições por hora
     },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Sistema de Vendas - Papelaria',
+    'DESCRIPTION': (
+        'API para cadastro de produtos, clientes, vendedores, vendas '
+        'e consulta de comissões por período.'
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 ROOT_URLCONF = 'config.urls'
