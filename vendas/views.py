@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from .models import Vendedor
+from .serializers import VendedorSerializer
+
+
+class VendedorViewSet(viewsets.ModelViewSet):
+    queryset = Vendedor.objects.all().order_by('nome')
+    serializer_class = VendedorSerializer

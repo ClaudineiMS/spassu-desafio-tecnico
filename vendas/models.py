@@ -1,3 +1,11 @@
+from django.conf import settings
 from django.db import models
 
-# Create your models here.
+
+class Vendedor(models.Model):
+    nome = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    telefone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nome
