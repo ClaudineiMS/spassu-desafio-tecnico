@@ -1,4 +1,7 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.response import Response
+
+from vendas.services.comissoes import listar_comissoes_por_periodo
 
 from .models import Cliente, Produto, Venda, Vendedor
 from .serializers import ClienteSerializer, ProdutoSerializer, VendaSerializer, VendedorSerializer
@@ -24,3 +27,32 @@ class VendaViewSet(viewsets.ModelViewSet):
         'itens__produto',
     ).order_by('-data_hora')
     serializer_class = VendaSerializer
+    
+
+class ComissaoViewSet(viewsets.ViewSet):
+    def list(self, request):
+        data_inicio = request.query_params.get('data_inicio')
+        data_fim = request.query_params.get('data_fim')
+
+        if not data_inicio or not data_fim:
+            return Response(
+                {
+                    'detail': (
+                        'Informe os parâmetros data_inicio e data_fim '
+                        'no formato YYYY-MM-DD.'
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        resultado = listar_comissoes_por_periodo(
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+        )
+
+        return Response({
+            'data_inicio': data_inicio,
+            'data_fim': data_fim,
+            'vendedores': resultado['vendedores'],
+            'total_geral': resultado['total_geral'],
+        })
