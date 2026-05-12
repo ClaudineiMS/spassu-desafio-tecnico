@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente, Produto, Vendedor
+from .models import Cliente, Produto, RegraComissao, Vendedor
 @admin.register(Vendedor)
 class VendedorAdmin(admin.ModelAdmin):
     list_display = [
@@ -50,3 +50,23 @@ class ProdutoAdmin(admin.ModelAdmin):
     ordering = [
         'descricao',
     ]
+    
+@admin.register(RegraComissao)
+class RegraComissaoAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'get_dia_semana',
+        'percentual_minimo',
+        'percentual_maximo',
+    ]
+    list_filter = [
+        'dia_semana',
+    ]
+    ordering = [
+        'dia_semana',
+    ]
+
+    def get_dia_semana(self, obj):
+        return obj.get_dia_semana_display()
+
+    get_dia_semana.short_description = 'Dia da semana'
