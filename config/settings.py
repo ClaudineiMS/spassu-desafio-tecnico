@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import Config, RepositoryEnv
+from decouple import Config, RepositoryEnv, Csv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,10 +27,13 @@ SECRET_KEY = 'django-insecure-qstv7@btnsm)99wxdmrja@*d&mani=sbu0j%3_^n78&#jcg9b9
 config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolvimento
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,0.0.0.0',
+    cast=Csv()
+)
 
 # Application definition
 
