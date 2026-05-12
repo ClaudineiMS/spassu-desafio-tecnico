@@ -14,7 +14,7 @@ class VendedorAdmin(admin.ModelAdmin):
         'telefone',
     ]
     ordering = [
-        'nome',
+        'id',
     ]
     
 @admin.register(Cliente)
@@ -31,7 +31,7 @@ class VendedorAdmin(admin.ModelAdmin):
         'telefone',
     ]
     ordering = [
-        'nome',
+        'id',
     ]
     
 @admin.register(Produto)
@@ -48,7 +48,7 @@ class ProdutoAdmin(admin.ModelAdmin):
         'descricao',
     ]
     ordering = [
-        'descricao',
+        'id',
     ]
     
 @admin.register(RegraComissao)
@@ -63,7 +63,7 @@ class RegraComissaoAdmin(admin.ModelAdmin):
         'dia_semana',
     ]
     ordering = [
-        'dia_semana',
+        'id',
     ]
 
     def get_dia_semana(self, obj):
