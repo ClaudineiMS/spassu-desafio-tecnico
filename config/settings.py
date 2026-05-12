@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import Config, RepositoryEnv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,6 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qstv7@btnsm)99wxdmrja@*d&mani=sbu0j%3_^n78&#jcg9b9'
+
+config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolvimento
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -51,15 +55,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#Definição de rate limit nas apis
+#Definição de rate limit as API do sistema
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/hour',  #User anônimo: 100 requisições por hora
-        'user': '1000/hour', #User autenticado: 1000 requisições por hora
+        'anon': config('DRF_THROTTLE_ANON_RATE', default='100/hour'),  # Anônimo: 100 requisições por hora
+        'user': config('DRF_THROTTLE_USER_RATE', default='1000/hour'), # Autenticado: 1000 requisições por hora
     },
 }
 
