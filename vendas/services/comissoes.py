@@ -1,7 +1,10 @@
+import logging
 from collections import defaultdict
 from decimal import Decimal
 
 from vendas.models import RegraComissao, Venda
+
+logger = logging.getLogger(__name__)
 
 
 def obter_percentual_comissao_aplicado(produto, data_hora):
@@ -35,6 +38,12 @@ def calcular_comissao_item(item):
 
 
 def listar_comissoes_por_periodo(data_inicio, data_fim):
+    logger.info(
+        'Calculando comissões do período %s até %s',
+        data_inicio,
+        data_fim,
+    )
+
     vendas = Venda.objects.filter(
         data_hora__date__gte=data_inicio,
         data_hora__date__lte=data_fim,
@@ -64,6 +73,11 @@ def listar_comissoes_por_periodo(data_inicio, data_fim):
     total_geral = sum(
         item['total_comissao']
         for item in vendedores
+    )
+
+    logger.info(
+        'Relatório de comissões gerado com %s vendedor(es)',
+        len(vendedores),
     )
 
     return {

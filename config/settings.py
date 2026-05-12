@@ -34,6 +34,9 @@ LOG_LEVEL = config('LOG_LEVEL', default='ERROR')
 DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default=LOG_LEVEL)
 DJANGO_REQUEST_LOG_LEVEL = config('DJANGO_REQUEST_LOG_LEVEL', default='ERROR')
 VENDAS_LOG_LEVEL = config('VENDAS_LOG_LEVEL', default=LOG_LEVEL)
+LOG_DIR = BASE_DIR / 'logs'
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FILE = config('LOG_FILE', default=str(LOG_DIR / 'app.log'))
 
 LOGGING = {
     'version': 1,
@@ -46,34 +49,48 @@ LOGGING = {
             ),
             'style': '{',
         },
-        'simple': {
-            'format': '[{asctime}] {levelname} {name} - {message}',
-            'style': '{',
-        },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE,
+            'formatter': 'default',
+            'encoding': 'utf-8',
+        },
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': [
+            'console',
+            'file',
+        ],
         'level': LOG_LEVEL,
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': [
+                'console',
+                'file',
+            ],
             'level': DJANGO_LOG_LEVEL,
             'propagate': False,
         },
         'django.request': {
-            'handlers': ['console'],
+            'handlers': [
+                'console',
+                'file',
+            ],
             'level': DJANGO_REQUEST_LOG_LEVEL,
             'propagate': False,
         },
         'vendas': {
-            'handlers': ['console'],
+            'handlers': [
+                'console',
+                'file',
+            ],
             'level': VENDAS_LOG_LEVEL,
             'propagate': False,
         },
@@ -101,11 +118,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+        
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
-    'vendas'
+    'vendas.apps.VendasConfig',
 ]
 
 MIDDLEWARE = [
