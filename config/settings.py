@@ -29,6 +29,57 @@ config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+#Configuração de logs
+LOG_LEVEL = config('LOG_LEVEL', default='ERROR')
+DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default=LOG_LEVEL)
+DJANGO_REQUEST_LOG_LEVEL = config('DJANGO_REQUEST_LOG_LEVEL', default='ERROR')
+VENDAS_LOG_LEVEL = config('VENDAS_LOG_LEVEL', default=LOG_LEVEL)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': (
+                '[{asctime}] {levelname} {name} '
+                '{module}.{funcName}:{lineno} - {message}'
+            ),
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{asctime}] {levelname} {name} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': LOG_LEVEL,
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': DJANGO_REQUEST_LOG_LEVEL,
+            'propagate': False,
+        },
+        'vendas': {
+            'handlers': ['console'],
+            'level': VENDAS_LOG_LEVEL,
+            'propagate': False,
+        },
+    },
+}
+
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost,127.0.0.1,0.0.0.0',
