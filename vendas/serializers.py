@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cliente, Produto, Vendedor
+from .models import Cliente, ItemVenda, Produto, Venda, Vendedor
 
 class VendedorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,9 +30,6 @@ class VendedorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('O e-mail do vendedor é obrigatório.')
         return email
 
-
-
-
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
@@ -61,7 +58,6 @@ class ClienteSerializer(serializers.ModelSerializer):
         if not telefone:
             raise serializers.ValidationError('O telefone do cliente é obrigatório.')
         return telefone
-    
     
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -102,3 +98,123 @@ class ProdutoSerializer(serializers.ModelSerializer):
                 'O percentual de comissão deve estar entre 0 e 10%.'
             )
         return value
+    
+class ItemVendaSerializer(serializers.ModelSerializer):
+    produto_descricao = serializers.CharField(
+        source='produto.descricao',
+        read_only=True,
+    )
+    valor_unitario = serializers.DecimalField(
+        source='produto.valor_unitario',
+        max_digits=10,
+        decimal_places=2,
+        read_only=True,
+    )
+    percentual_comissao = serializers.DecimalField(
+        source='produto.percentual_comissao',
+        max_digits=5,
+        decimal_places=2,
+        read_only=True,
+    )
+    valor_total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ItemVenda
+        fields = [
+            'id',
+            'produto',
+            'produto_descricao',
+            'quantidade',
+            'valor_unitario',
+            'percentual_comissao',
+            'valor_total',
+        ]
+        read_only_fields = [
+            'id',
+            'produto_descricao',
+            'valor_unitario',
+            'percentual_comissao',
+            'valor_total',
+        ]
+
+    def get_valor_total(self, obj):
+        return obj.quantidade * obj.produto.valor_unitario
+
+    def validate_quantidade(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                'A quantidade deve ser maior que zero.'
+            )
+
+        return value
+    
+class VendaSerializer(serializers.ModelSerializer):
+    itens = ItemVendaSerializer(many=True)
+    cliente_nome = serializers.CharField(
+        source='cliente.nome',
+        read_only=True,
+    )
+    vendedor_nome = serializers.CharField(
+        source='vendedor.nome',
+        read_only=True,
+    )
+    valor_total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Venda
+        fields = [
+            'id',
+            'numero_nota_fiscal',
+            'data_hora',
+            'cliente',
+            'cliente_nome',
+            'vendedor',
+            'vendedor_nome',
+            'itens',
+            'valor_total',
+        ]
+        read_only_fields = [
+            'id',
+            'cliente_nome',
+            'vendedor_nome',
+            'valor_total',
+        ]
+
+    def get_valor_total(self, obj):
+        return sum(
+            item.quantidade * item.produto.valor_unitario
+            for item in obj.itens.all()
+        )
+
+    def validate_itens(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                'A venda deve possuir pelo menos um item.'
+            )
+        return value
+
+    def create(self, validated_data):
+        itens_data = validated_data.pop('itens')
+        venda = Venda.objects.create(**validated_data)
+
+        for item_data in itens_data:
+            ItemVenda.objects.create(
+                venda=venda,
+                **item_data,
+            )
+        return venda
+
+    def update(self, instance, validated_data):
+        itens_data = validated_data.pop('itens', None)
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+        if itens_data is not None:
+            instance.itens.all().delete()
+
+            for item_data in itens_data:
+                ItemVenda.objects.create(
+                    venda=instance,
+                    **item_data,
+                )
+        return instance

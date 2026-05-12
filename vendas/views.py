@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Cliente, Produto, Vendedor
-from .serializers import ClienteSerializer, ProdutoSerializer, VendedorSerializer
+from .models import Cliente, Produto, Venda, Vendedor
+from .serializers import ClienteSerializer, ProdutoSerializer, VendaSerializer, VendedorSerializer
 
 
 class VendedorViewSet(viewsets.ModelViewSet):
@@ -15,3 +15,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all().order_by('descricao')
     serializer_class = ProdutoSerializer
+    
+class VendaViewSet(viewsets.ModelViewSet):
+    queryset = Venda.objects.select_related(
+        'cliente',
+        'vendedor',
+    ).prefetch_related(
+        'itens__produto',
+    ).order_by('-data_hora')
+    serializer_class = VendaSerializer
