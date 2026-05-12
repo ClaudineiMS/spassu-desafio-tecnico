@@ -80,6 +80,10 @@ REST_FRAMEWORK = {
         'user': config('DRF_THROTTLE_USER_RATE', default='1000/hour'), # Autenticado: 1000 requisições por hora
     },
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'
+    ),
+    'PAGE_SIZE': 10,
 }
 
 SPECTACULAR_SETTINGS = {
