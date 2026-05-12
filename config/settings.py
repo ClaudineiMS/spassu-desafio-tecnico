@@ -51,6 +51,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+#Definição de rate limit nas apis
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',  #User anônimo: 100 requisições por hora
+        'user': '1000/hour', #User autenticado: 1000 requisições por hora
+    },
+}
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
