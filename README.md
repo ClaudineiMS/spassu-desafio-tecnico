@@ -49,19 +49,19 @@ pip install -r requirements.txt
 Execute as migrations para criar as tabelas no banco de dados:
 
 ```bash
-python manage.py migrate
+python3 manage.py migrate
 ```
 
 Crie um superusuário para acessar o Django Admin:
 
 ```bash
-python manage.py createsuperuser
+python3 manage.py createsuperuser
 ```
 
 Inicie o servidor de desenvolvimento:
 
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 A aplicação estará disponível em:
