@@ -8,6 +8,11 @@ class VendedorAdmin(admin.ModelAdmin):
         'email',
         'telefone',
     ]
+    list_editable = [
+        'nome',
+        'email',
+        'telefone',
+    ]
     search_fields = [
         'nome',
         'email',
@@ -21,6 +26,11 @@ class VendedorAdmin(admin.ModelAdmin):
 class VendedorAdmin(admin.ModelAdmin):
     list_display = [
         'id',
+        'nome',
+        'email',
+        'telefone',
+    ]
+    list_editable = [
         'nome',
         'email',
         'telefone',
@@ -43,6 +53,11 @@ class ProdutoAdmin(admin.ModelAdmin):
         'valor_unitario',
         'percentual_comissao',
     ]
+    list_editable = [
+        'descricao',
+        'valor_unitario',
+        'percentual_comissao',
+    ]
     search_fields = [
         'codigo',
         'descricao',
@@ -55,7 +70,14 @@ class ProdutoAdmin(admin.ModelAdmin):
 class RegraComissaoAdmin(admin.ModelAdmin):
     list_display = [
         'id',
-        'get_dia_semana',
+        'dia_semana',
+        'percentual_minimo',
+        'percentual_maximo',
+    ]
+    list_display_links = [
+        'id',
+    ]
+    list_editable = [
         'percentual_minimo',
         'percentual_maximo',
     ]
@@ -65,8 +87,3 @@ class RegraComissaoAdmin(admin.ModelAdmin):
     ordering = [
         'id',
     ]
-
-    def get_dia_semana(self, obj):
-        return obj.get_dia_semana_display()
-
-    get_dia_semana.short_description = 'Dia da semana'
