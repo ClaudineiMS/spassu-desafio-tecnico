@@ -17,57 +17,41 @@ Para executar o projeto localmente no Linux, é necessário ter instalado:
 
 ---
 
-## Executando o projeto localmente com ambiente virtual
+## Executando o projeto em modo de desenvolvimento
 
-Crie o ambiente virtual:
+Crie o ambiente virtual, ative o ambiente virtual, com o ambiente virtual ativo instale as dependências do projeto,
+execute as migrations para criar as tabelas no banco de dados, crie um superusuário para acessar o Django Admin e por fim
+inicie o servidor de desenvolvimento
 
 ```bash
 python3 -m venv venv
-```
-
-Ative o ambiente virtual:
-
-```bash
 source venv/bin/activate
-```
-
-Com o ambiente virtual ativo, instale as dependências do projeto:
-
-```bash
 pip install -r requirements.txt
-```
-
-Execute as migrations para criar as tabelas no banco de dados:
-
-```bash
 python3 manage.py migrate
-```
-
-Crie um superusuário para acessar o Django Admin:
-
-```bash
 python3 manage.py createsuperuser
-```
-
-Inicie o servidor de desenvolvimento:
-
-```bash
 python3 manage.py runserver
 ```
 
-A aplicação estará disponível em:
+## Links uteis
+Os links são os mesmos para a aplicação dockerizada ou em modo de desenvolvimento
 
+Aplicação:
 ```txt
 http://127.0.0.1:8000/
 ```
 
-O painel administrativo do Django estará disponível em:
-
+Painel administrativo do Django:
 ```txt
 http://127.0.0.1:8000/admin/
 ```
-
 Use o usuário e a senha cadastrados no comando `createsuperuser` para acessar o admin.
+
+
+API root e documentação:
+```txt
+http://127.0.0.1:8000/api
+http://127.0.0.1:8000/api/docs
+```
 
 ---
 
@@ -76,16 +60,20 @@ Use o usuário e a senha cadastrados no comando `createsuperuser` para acessar o
 Também é possível executar a aplicação utilizando Docker.
 
 Na raiz do projeto, execute:
+```
+bash
+docker compose up
+```
 
+Ao subir a aplicação dockerizada é criado automaticamente o usuário admin:
 ```bash
-docker compose up --build
+usuário: admin
+senha: admin
 ```
+Além disso os testes já são executados automaticamente e ficam disponíveis na pasta de logs. 
+A implementação desse comportamento pode ser encontrada no arquivo **entrypoint.sh**
 
-A aplicação estará disponível em:
 
-```txt
-http://127.0.0.1:8000/
-```
 
 ## Funcionalidades implementadas
 
