@@ -1,5 +1,13 @@
 #!/bin/sh
 
+echo "Configurando permissões dos logs..."
+mkdir -p logs
+touch logs/app.log
+touch logs/test_logs_file.log
+chmod -R a+rwX logs
+
+umask 000
+
 echo "Aplicando migrations..."
 python manage.py migrate --noinput
 
