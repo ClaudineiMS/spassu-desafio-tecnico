@@ -1,19 +1,10 @@
-# spassu-backend
+# Backend
 
 Backend desenvolvido em **Python** e **Django** para uma papelaria hipotética, como parte de um desafio técnico para uma vaga de **Desenvolvedor Full Stack** na **Spassu**.
 
 A aplicação tem como objetivo registrar vendas, gerenciar produtos, clientes e vendedores, além de calcular comissões de vendedores com base nos produtos vendidos e nas regras de comissão configuradas por dia da semana.
 
 O projeto utiliza o **Django REST Framework** para criação da API REST e o **SQLite** como banco de dados inicial, visando simplicidade no desenvolvimento e facilidade de execução. Também foi adicionada uma configuração com **Docker**, permitindo executar a aplicação em um ambiente padronizado.
-
-## Tecnologias utilizadas
-
-- Python
-- Django
-- Django REST Framework
-- SQLite
-- Docker
-- Docker Compose
 
 ## Pré-requisitos
 
@@ -95,3 +86,27 @@ A aplicação estará disponível em:
 ```txt
 http://127.0.0.1:8000/
 ```
+
+## Funcionalidades implementadas
+
+- Cadastro de vendedores
+- Cadastro de clientes
+- Cadastro de produtos
+- Cadastro de vendas com um ou mais produtos
+- Cadastro de regras de comissão por dia da semana
+- Cálculo de comissão considerando:
+  - percentual de comissão do produto
+  - valor unitário do produto
+  - quantidade vendida
+  - regra mínima e máxima de comissão por dia da semana
+- Relatório de comissões por vendedor em um período
+- Total geral de comissões no período
+- Django Admin para gerenciamento dos dados
+- API REST com CRUD de produtos, clientes, vendedores e vendas
+- Documentação Swagger da API
+- Paginação global nas APIs
+- Logs de operações da aplicação
+- Logs dos testes automatizados
+- Testes automatizados de serviços e APIs
+
+---
