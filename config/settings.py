@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import Config, RepositoryEnv, Csv
-
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +29,10 @@ config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+#Testes
+TEST_DEBUG = config('TEST_DEBUG', default=False, cast=bool)
+TEST_LOG_FILE = config('TEST_LOG_FILE', default='logs/test_services.log')
+
 #Configuração de logs
 LOG_LEVEL = config('LOG_LEVEL', default='ERROR')
 DJANGO_LOG_LEVEL = config('DJANGO_LOG_LEVEL', default=LOG_LEVEL)
@@ -37,6 +41,10 @@ VENDAS_LOG_LEVEL = config('VENDAS_LOG_LEVEL', default=LOG_LEVEL)
 LOG_DIR = BASE_DIR / 'logs'
 LOG_DIR.mkdir(exist_ok=True)
 LOG_FILE = config('LOG_FILE', default=str(LOG_DIR / 'app.log'))
+
+#Estas variaveis são para que testes não gerem logs como se estivesse cadastrando produtos, clientes e afins
+IS_TESTING = 'test' in sys.argv
+LOG_HANDLERS = ['null'] if IS_TESTING else ['console', 'file']
 
 LOGGING = {
     'version': 1,
@@ -51,6 +59,9 @@ LOGGING = {
         },
     },
     'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'default',
@@ -63,34 +74,22 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': [
-            'console',
-            'file',
-        ],
+        'handlers': LOG_HANDLERS,
         'level': LOG_LEVEL,
     },
     'loggers': {
         'django': {
-            'handlers': [
-                'console',
-                'file',
-            ],
+            'handlers': LOG_HANDLERS,
             'level': DJANGO_LOG_LEVEL,
             'propagate': False,
         },
         'django.request': {
-            'handlers': [
-                'console',
-                'file',
-            ],
+            'handlers': LOG_HANDLERS,
             'level': DJANGO_REQUEST_LOG_LEVEL,
             'propagate': False,
         },
         'vendas': {
-            'handlers': [
-                'console',
-                'file',
-            ],
+            'handlers': LOG_HANDLERS,
             'level': VENDAS_LOG_LEVEL,
             'propagate': False,
         },
@@ -110,7 +109,6 @@ CORS_ALLOWED_ORIGINS = config(
 )
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -137,19 +135,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#Definição de rate limit as API do sistema
+
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-    ],
+    ],                                                                 #Definição de rate limit as API do sistema
     'DEFAULT_THROTTLE_RATES': {
         'anon': config('DRF_THROTTLE_ANON_RATE', default='100/hour'),  # Anônimo: 100 requisições por hora
         'user': config('DRF_THROTTLE_USER_RATE', default='1000/hour'), # Autenticado: 1000 requisições por hora
     },
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_PAGINATION_CLASS': (
-        'rest_framework.pagination.PageNumberPagination'
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',      # Habilita a documentação de todas as APIs 
+    'DEFAULT_PAGINATION_CLASS': (                                       
+        'rest_framework.pagination.PageNumberPagination'               # habilita paginação nas APIs
     ),
     'PAGE_SIZE': 10,
 }
