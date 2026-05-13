@@ -32,6 +32,37 @@ python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
+## Configurações
+
+**Carga inicial do banco**
+
+Para a aplicação dockerizada:
+- Basta definir a variável **LOAD_INITIAL_DATA = True** 
+
+Para a aplicação em mode de desenvolvimento:
+```bash
+python3 manage.py seed_initial_data
+```
+
+Ao fazer isso o banco já vira populado com:
+- 20 vendedores
+- 20 clientes
+- 20 produtos
+- 7 regras de comissão
+- 20 vendas
+- 40 itens de venda
+
+**Testes**
+
+Para a aplicação dockerizada:
+- Basta definir a variável **RUN_TESTS_ON_STARTUP = True** 
+
+Para a aplicação em mode de desenvolvimento:
+```bash
+python3 manage.py test
+```
+
+
 ## Links uteis
 Os links são os mesmos para a aplicação dockerizada ou em modo de desenvolvimento
 
