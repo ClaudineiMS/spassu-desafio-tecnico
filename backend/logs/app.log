@@ -1,5 +1,0 @@
-[2026-05-12 19:18:05,064] INFO vendas.signals signals.registrar_log_cliente_removido:26 - Cliente removido: id=11, nome=Iago Torres júnior, email=iago.torres@email.com
-[2026-05-12 19:20:10,148] INFO vendas.services.comissoes comissoes.listar_comissoes_por_periodo:41 - Calculando comissões do período 2026-05-01 até 2026-05-31
-[2026-05-12 19:20:10,158] INFO vendas.services.comissoes comissoes.listar_comissoes_por_periodo:78 - Relatório de comissões gerado com 2 vendedor(es)
-[2026-05-12 19:25:30,602] INFO vendas.signals signals.registrar_log_cliente:15 - Cliente atualizado: id=1, nome=Pedro Rocha, email=pedro.rocha@gmail.com
-[2026-05-13 12:27:24,292] INFO vendas.signals signals.registrar_log_cliente:15 - Cliente atualizado: id=1, nome=Pedro Rocha Silva, email=pedro.rocha@gmail.com

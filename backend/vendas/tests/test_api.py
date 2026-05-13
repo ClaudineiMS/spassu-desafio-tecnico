@@ -269,19 +269,19 @@ class ApiTestCase(LoggedTestCase):
             Decimal('10.00'),
         )
         
-    def test_deve_falhar_propositalmente(self):
-        response = self.client.get('/api/clientes/')
+    # def test_deve_falhar_propositalmente(self):
+    #     response = self.client.get('/api/clientes/')
 
-        self.exibir_resultado(
-            'API: teste propositalmente falhando',
-            {
-                'status_code_obtido': response.status_code,
-                'status_code_esperado': status.HTTP_201_CREATED,
-                'observacao': (
-                    'Este teste deve falhar porque uma listagem GET retorna 200, '
-                    'não 201.'
-                ),
-            },
-        )
+    #     self.exibir_resultado(
+    #         'API: teste propositalmente falhando',
+    #         {
+    #             'status_code_obtido': response.status_code,
+    #             'status_code_esperado': status.HTTP_201_CREATED,
+    #             'observacao': (
+    #                 'Este teste deve falhar porque uma listagem GET retorna 200, '
+    #                 'não 201.'
+    #             ),
+    #         },
+    #     )
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)

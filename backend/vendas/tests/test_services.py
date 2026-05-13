@@ -208,5 +208,5 @@ class ComissaoServiceTestCase(LoggedTestCase):
         )
         self.assertEqual(resultado['total_geral'], Decimal('20.00'))
     
-    def test_deve_falhar_propositalmente(self):
-        self.assertEqual(Decimal('10.00'), Decimal('20.00'))
+    # def test_deve_falhar_propositalmente(self):
+    #     self.assertEqual(Decimal('10.00'), Decimal('20.00'))
