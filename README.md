@@ -74,6 +74,17 @@ Além disso os testes já são executados automaticamente e ficam disponíveis n
 A implementação desse comportamento pode ser encontrada no arquivo **entrypoint.sh**
 
 
+## Visão geral
+- Separação da regra de comissão em service
+- Separação dos logs em signals
+- Separação dos testes com **LoggedTestCase**: 
+  - criar arquivo de log
+  - salvar resultado no log
+  - registrar falhas
+  - imprimir no terminal quando TEST_DEBUG=True
+- Uso de serializers específicos por entidade
+- Configurações por variáveis de ambiente
+
 
 ## Funcionalidades implementadas
 
