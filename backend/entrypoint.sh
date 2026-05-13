@@ -37,5 +37,10 @@ if [ "$RUN_TESTS_ON_STARTUP" = "True" ]; then
     python manage.py test
 fi
 
+if [ "$LOAD_INITIAL_DATA" = "True" ]; then
+    echo "Executando carga inicial de dados..."
+    python manage.py seed_initial_data
+fi
+
 echo "Iniciando servidor..."
 exec "$@"
