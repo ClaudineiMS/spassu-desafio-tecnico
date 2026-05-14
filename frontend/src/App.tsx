@@ -5,6 +5,7 @@ import type { JSX } from "react";
 
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { SideMenu } from "./components/SideMenu/SideMenu";
+import { VendasPage } from "./pages/Vendas/VendasPage";
 
 function App(): JSX.Element {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,9 +29,12 @@ function App(): JSX.Element {
 
             <Box
                 sx={{
-                    minHeight: "100vh",
+                    height: "100vh",
                     width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                     backgroundColor: "#f7f7f7",
+                    overflow: "hidden",
                 }}
             >
                 <AppHeader title={pageTitle} onMenuClick={handleOpenMenu} />
@@ -45,14 +49,29 @@ function App(): JSX.Element {
                     component="main"
                     sx={{
                         width: "100%",
+                        flex: 1,
+                        minHeight: 0,
+                        boxSizing: "border-box",
+                        overflow: "hidden",
                         p: {
                             xs: 2,
                             sm: 4,
-                            md: 6,
+                            md: 5,
                         },
                     }}
                 >
-                    Conteúdo da página {pageTitle}
+                    {pageTitle === "Vendas" && <VendasPage />}
+
+                    {pageTitle === "Comissões" && (
+                        <Box
+                            sx={{
+                                color: "#00585E",
+                                fontWeight: 700,
+                            }}
+                        >
+                            Página de comissões será implementada na próxima etapa.
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </>
