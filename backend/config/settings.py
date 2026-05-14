@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import Config, RepositoryEnv, Csv
+from decouple import Config, config, RepositoryEnv, Csv
 import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,6 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qstv7@btnsm)99wxdmrja@*d&mani=sbu0j%3_^n78&#jcg9b9'
+
+#Usuário padrão
+DEFAULT_SUPERUSER_USERNAME = config('DEFAULT_SUPERUSER_USERNAME',default=None,)
+DEFAULT_SUPERUSER_EMAIL = config('DEFAULT_SUPERUSER_EMAIL',default=None,)
+DEFAULT_SUPERUSER_PASSWORD = config('DEFAULT_SUPERUSER_PASSWORD',default=None,)
 
 config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolvimento
 
