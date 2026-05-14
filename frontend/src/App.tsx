@@ -1,21 +1,62 @@
-import { useState, type JSX } from "react";
+import { useState } from "react";
+
 import { Box, CssBaseline } from "@mui/material";
+import type { JSX } from "react";
 
 import { AppHeader } from "./components/AppHeader/AppHeader";
+import { SideMenu } from "./components/SideMenu/SideMenu";
 
 function App(): JSX.Element {
-  const [_isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [pageTitle, setPageTitle] = useState("Vendas");
 
-  function handleMenuClick(): void {
-    setIsMenuOpen((currentValue) => !currentValue);
-  }
+    function handleOpenMenu(): void {
+        setIsMenuOpen(true);
+    }
 
-  return (
-    <>
-      <CssBaseline />
-      <AppHeader title="Vendas" onMenuClick={handleMenuClick} />
-    </>
-  );
+    function handleCloseMenu(): void {
+        setIsMenuOpen(false);
+    }
+
+    function handleNavigate(title: string): void {
+        setPageTitle(title);
+    }
+
+    return (
+        <>
+            <CssBaseline />
+
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    width: "100%",
+                    backgroundColor: "#f7f7f7",
+                }}
+            >
+                <AppHeader title={pageTitle} onMenuClick={handleOpenMenu} />
+
+                <SideMenu
+                    open={isMenuOpen}
+                    onClose={handleCloseMenu}
+                    onNavigate={handleNavigate}
+                />
+
+                <Box
+                    component="main"
+                    sx={{
+                        width: "100%",
+                        p: {
+                            xs: 2,
+                            sm: 4,
+                            md: 6,
+                        },
+                    }}
+                >
+                    Conteúdo da página {pageTitle}
+                </Box>
+            </Box>
+        </>
+    );
 }
 
 export default App;
