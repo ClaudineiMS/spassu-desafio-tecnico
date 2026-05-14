@@ -255,13 +255,13 @@ class ApiTestCase(LoggedTestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['vendedores']), 1)
+        self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(
-            response.data['vendedores'][0]['nome'],
+            response.data['results'][0]['nome'],
             'Vendedor Teste',
         )
         self.assertEqual(
-            Decimal(response.data['vendedores'][0]['total_comissao']),
+            Decimal(response.data['results'][0]['total_comissao']),
             Decimal('10.00'),
         )
         self.assertEqual(

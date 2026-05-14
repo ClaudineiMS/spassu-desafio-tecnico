@@ -1,10 +1,51 @@
 import logging
 from collections import defaultdict
+from datetime import datetime, time
 from decimal import Decimal
 
-from vendas.models import RegraComissao, Venda
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+
+from vendas.models import ItemVenda, RegraComissao
 
 logger = logging.getLogger(__name__)
+
+
+def converter_data_para_date(data):
+    if hasattr(data, 'year') and hasattr(data, 'month') and hasattr(data, 'day'):
+        return data
+
+    data_convertida = parse_date(str(data))
+
+    if not data_convertida:
+        raise ValueError('Data inválida. Use o formato YYYY-MM-DD.')
+
+    return data_convertida
+
+
+def montar_periodo(data_inicio, data_fim):
+    data_inicio_convertida = converter_data_para_date(data_inicio)
+    data_fim_convertida = converter_data_para_date(data_fim)
+
+    inicio = datetime.combine(data_inicio_convertida, time.min)
+    fim = datetime.combine(data_fim_convertida, time.max)
+
+    if timezone.is_naive(inicio):
+        inicio = timezone.make_aware(inicio)
+
+    if timezone.is_naive(fim):
+        fim = timezone.make_aware(fim)
+
+    return inicio, fim
+
+
+def carregar_regras_comissao():
+    regras = RegraComissao.objects.all()
+
+    return {
+        regra.dia_semana: regra
+        for regra in regras
+    }
 
 
 def obter_percentual_comissao_aplicado(produto, data_hora):
@@ -18,6 +59,10 @@ def obter_percentual_comissao_aplicado(produto, data_hora):
     if not regra:
         return percentual
 
+    return aplicar_limite_percentual(percentual, regra)
+
+
+def aplicar_limite_percentual(percentual, regra):
     if percentual < regra.percentual_minimo:
         return regra.percentual_minimo
 
@@ -37,6 +82,25 @@ def calcular_comissao_item(item):
     return valor_total_item * percentual / Decimal('100')
 
 
+def calcular_comissao_por_valores(
+    quantidade,
+    valor_unitario,
+    percentual_comissao,
+    data_hora,
+    regras_por_dia,
+):
+    dia_semana = data_hora.weekday()
+    regra = regras_por_dia.get(dia_semana)
+    percentual = percentual_comissao
+
+    if regra:
+        percentual = aplicar_limite_percentual(percentual, regra)
+
+    valor_total_item = quantidade * valor_unitario
+
+    return valor_total_item * percentual / Decimal('100')
+
+
 def listar_comissoes_por_periodo(data_inicio, data_fim):
     logger.info(
         'Calculando comissões do período %s até %s',
@@ -44,29 +108,54 @@ def listar_comissoes_por_periodo(data_inicio, data_fim):
         data_fim,
     )
 
-    vendas = Venda.objects.filter(
-        data_hora__date__gte=data_inicio,
-        data_hora__date__lte=data_fim,
-    ).select_related(
-        'vendedor',
-    ).prefetch_related(
-        'itens__produto',
+    inicio, fim = montar_periodo(
+        data_inicio=data_inicio,
+        data_fim=data_fim,
     )
 
-    totais_por_vendedor = defaultdict(Decimal)
+    regras_por_dia = carregar_regras_comissao()
 
-    for venda in vendas:
-        for item in venda.itens.all():
-            totais_por_vendedor[venda.vendedor] += calcular_comissao_item(item)
+    itens = (
+        ItemVenda.objects.filter(
+            venda__data_hora__gte=inicio,
+            venda__data_hora__lte=fim,
+        )
+        .values(
+            'quantidade',
+            'produto__valor_unitario',
+            'produto__percentual_comissao',
+            'venda__data_hora',
+            'venda__vendedor_id',
+            'venda__vendedor__nome',
+        )
+        .iterator(chunk_size=2000)
+    )
 
-    vendedores = []
+    totais_por_vendedor = defaultdict(lambda: Decimal('0.00'))
+    nomes_por_vendedor = {}
 
-    for vendedor, total in totais_por_vendedor.items():
-        vendedores.append({
-            'id': vendedor.id,
-            'nome': vendedor.nome,
+    for item in itens:
+        vendedor_id = item['venda__vendedor_id']
+        nomes_por_vendedor[vendedor_id] = item['venda__vendedor__nome']
+
+        valor_comissao = calcular_comissao_por_valores(
+            quantidade=item['quantidade'],
+            valor_unitario=item['produto__valor_unitario'],
+            percentual_comissao=item['produto__percentual_comissao'],
+            data_hora=item['venda__data_hora'],
+            regras_por_dia=regras_por_dia,
+        )
+
+        totais_por_vendedor[vendedor_id] += valor_comissao
+
+    vendedores = [
+        {
+            'id': vendedor_id,
+            'nome': nomes_por_vendedor[vendedor_id],
             'total_comissao': total.quantize(Decimal('0.01')),
-        })
+        }
+        for vendedor_id, total in totais_por_vendedor.items()
+    ]
 
     vendedores.sort(key=lambda item: item['nome'])
 
