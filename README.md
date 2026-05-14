@@ -101,6 +101,7 @@ Ao subir a aplicação dockerizada é criado automaticamente o usuário admin:
 usuário: admin
 senha: admin
 ```
+Para inativar o usuário padrão ou mudar o user ou a senha basta alterar na env as variáveis com **DEFAULT_SUPERUSER**
 Além disso os testes já são executados automaticamente e ficam disponíveis na pasta de logs. 
 A implementação desse comportamento pode ser encontrada no arquivo **entrypoint.sh**
 
