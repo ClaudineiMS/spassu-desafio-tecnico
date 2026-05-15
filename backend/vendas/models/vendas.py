@@ -13,12 +13,12 @@ class Venda(models.Model):
     data_hora = models.DateTimeField()
     cliente = models.ForeignKey(
         Cliente,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='vendas',
     )
     vendedor = models.ForeignKey(
         Vendedor,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='vendas',
     )
 
@@ -39,7 +39,7 @@ class ItemVenda(models.Model):
     )
     produto = models.ForeignKey(
         Produto,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='itens_venda',
     )
     quantidade = models.PositiveIntegerField(

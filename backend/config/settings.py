@@ -34,6 +34,13 @@ config = Config(RepositoryEnv('.env.dev')) #Pega os valores da .env de desenvolv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+SEED_TOTAL_CLIENTES = config('SEED_TOTAL_CLIENTES',default=20,cast=int)
+SEED_TOTAL_VENDEDORES = config('SEED_TOTAL_VENDEDORES',default=20,cast=int)
+SEED_TOTAL_PRODUTOS = config('SEED_TOTAL_PRODUTOS',default=20,cast=int)
+SEED_TOTAL_VENDAS = config('SEED_TOTAL_VENDAS',default=20,cast=int)
+SEED_ITENS_POR_VENDA = config('SEED_ITENS_POR_VENDA',default=2,cast=int)
+SEED_BATCH_SIZE = config('SEED_BATCH_SIZE',default=20,cast=int)
+
 #Testes
 TEST_DEBUG = config('TEST_DEBUG', default=False, cast=bool)
 TEST_LOG_FILE = config('TEST_LOG_FILE', default='logs/test_services.log')
