@@ -11,6 +11,7 @@ import { VendasPage } from "./pages/Vendas/VendasPage";
 function App(): JSX.Element {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [pageTitle, setPageTitle] = useState("Vendas");
+    const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
     function handleOpenMenu(): void {
         setIsMenuOpen(true);
@@ -35,6 +36,11 @@ function App(): JSX.Element {
 
     function handleSaleCreated(): void {
         setPageTitle("Vendas");
+        setFeedbackMessage("VENDA REALIZADA COM SUCESSO!");
+    }
+
+    function handleClearFeedback(): void {
+        setFeedbackMessage(null);
     }
 
     return (
@@ -75,7 +81,11 @@ function App(): JSX.Element {
                     }}
                 >
                     {pageTitle === "Vendas" && (
-                        <VendasPage onCreateSale={handleCreateSale} />
+                        <VendasPage
+                            onCreateSale={handleCreateSale}
+                            feedbackMessage={feedbackMessage}
+                            onClearFeedback={handleClearFeedback}
+                        />
                     )}
 
                     {pageTitle === "Nova Venda" && (

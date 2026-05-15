@@ -16,9 +16,12 @@ import {
     formatarDataHora,
     formatarMoeda,
 } from "./utils/vendasFormatters";
+import { FeedbackToast } from "../../components/FeedbackToast/FeedbackToast";
 
 interface VendasPageProps {
     onCreateSale: () => void;
+    feedbackMessage?: string | null;
+    onClearFeedback?: () => void;
 }
 
 type VendaTableRow =
@@ -46,6 +49,8 @@ const headerFontSx = {
 
 export function VendasPage({
     onCreateSale,
+    feedbackMessage,
+    onClearFeedback,
 }: VendasPageProps): JSX.Element {
     const [expandedVendaId, setExpandedVendaId] = useState<number | null>(null);
 
@@ -238,6 +243,14 @@ export function VendasPage({
                     Nenhuma venda encontrada.
                 </Alert>
             )}
+
+            <FeedbackToast
+                open={Boolean(feedbackMessage)}
+                message={feedbackMessage ?? ""}
+                onClose={() => {
+                    onClearFeedback?.();
+                }}
+            />
         </Box>
     );
 }
