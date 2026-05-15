@@ -1,9 +1,10 @@
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+
 import {
     Box,
     Drawer,
+    IconButton,
     List,
     ListItemButton,
     ListItemIcon,
@@ -11,6 +12,8 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
+import cashregister from "../../assets/cashregister.svg"
+import calculator from "../../assets/calculator.svg"
 interface SideMenuProps {
     open: boolean;
     onClose: () => void;
@@ -27,11 +30,45 @@ const drawerWidth = 320;
 const menuItems: MenuItem[] = [
     {
         label: "Vendas",
-        icon: <PointOfSaleIcon />,
+        icon: <IconButton
+            aria-label="Editar venda"
+            size="small"
+            sx={{
+                p: 0.5,
+            }}
+        >
+            <Box
+                component="img"
+                src={cashregister}
+                sx={{
+                    width: 20,
+                    height: 20,
+                    display: "block",
+                    objectFit: "contain",
+                }}
+            />
+        </IconButton>
     },
     {
         label: "Comissões",
-        icon: <AssignmentTurnedInIcon />,
+        icon: <IconButton
+            aria-label="Editar venda"
+            size="small"
+            sx={{
+                p: 0.5,
+            }}
+        >
+            <Box
+                component="img"
+                src={calculator}
+                sx={{
+                    width: 20,
+                    height: 20,
+                    display: "block",
+                    objectFit: "contain",
+                }}
+            />
+        </IconButton>
     },
 ];
 
