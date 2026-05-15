@@ -1,8 +1,11 @@
 import { Box } from "@mui/material";
 import type { JSX } from "react";
 
+import { ErrorState } from "../../components/ErrorState/ErrorState";
+import { LoadingState } from "../../components/LoadingState/LoadingState";
 import { SaleDataSection } from "./components/SaleDataSection";
 import { SaleProductSection } from "./components/SaleProductSection";
+import { useSaleForm } from "./hooks/useSaleForm";
 
 interface SaleFormPageProps {
     onCancel: () => void;
@@ -11,6 +14,39 @@ interface SaleFormPageProps {
 export function SaleFormPage({
     onCancel,
 }: SaleFormPageProps): JSX.Element {
+    const {
+        searchTerm,
+        quantity,
+        selectedProductId,
+        selectedClientId,
+        selectedSellerId,
+        saleDate,
+        products,
+        clients,
+        sellers,
+        saleItems,
+        totalValue,
+        canSubmit,
+        isLoadingInitialData,
+        errorMessage,
+        setSearchTerm,
+        setQuantity,
+        setSelectedProductId,
+        setSelectedClientId,
+        setSelectedSellerId,
+        setSaleDate,
+        handleAddItem,
+        handleRemoveItem,
+    } = useSaleForm();
+
+    if (isLoadingInitialData) {
+        return <LoadingState message="Carregando dados da venda..." />;
+    }
+
+    if (errorMessage) {
+        return <ErrorState message={errorMessage} />;
+    }
+
     return (
         <Box
             sx={{
@@ -29,9 +65,32 @@ export function SaleFormPage({
                 color: "#111111",
             }}
         >
-            <SaleProductSection />
+            <SaleProductSection
+                searchTerm={searchTerm}
+                quantity={quantity}
+                selectedProductId={selectedProductId}
+                products={products}
+                saleItems={saleItems}
+                onSearchTermChange={setSearchTerm}
+                onQuantityChange={setQuantity}
+                onProductSelect={setSelectedProductId}
+                onAddItem={handleAddItem}
+                onRemoveItem={handleRemoveItem}
+            />
 
-            <SaleDataSection onCancel={onCancel} />
+            <SaleDataSection
+                saleDate={saleDate}
+                selectedClientId={selectedClientId}
+                selectedSellerId={selectedSellerId}
+                clients={clients}
+                sellers={sellers}
+                totalValue={totalValue}
+                canSubmit={canSubmit}
+                onSaleDateChange={setSaleDate}
+                onClientChange={setSelectedClientId}
+                onSellerChange={setSelectedSellerId}
+                onCancel={onCancel}
+            />
         </Box>
     );
 }

@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
+import type { ClienteResumo, VendedorResumo } from "../../../types/venda";
 import {
     disabledButtonSx,
     inputSx,
@@ -15,10 +16,37 @@ import {
 } from "../styles/saleFormStyles";
 
 interface SaleDataSectionProps {
+    saleDate: string;
+    selectedClientId: number | "";
+    selectedSellerId: number | "";
+    clients: ClienteResumo[];
+    sellers: VendedorResumo[];
+    totalValue: number;
+    canSubmit: boolean;
+    onSaleDateChange: (value: string) => void;
+    onClientChange: (value: number | "") => void;
+    onSellerChange: (value: number | "") => void;
     onCancel: () => void;
 }
 
+function formatCurrency(value: number): string {
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(value);
+}
+
 export function SaleDataSection({
+    saleDate,
+    selectedClientId,
+    selectedSellerId,
+    clients,
+    sellers,
+    totalValue,
+    canSubmit,
+    onSaleDateChange,
+    onClientChange,
+    onSellerChange,
     onCancel,
 }: SaleDataSectionProps): JSX.Element {
     return (
@@ -54,7 +82,11 @@ export function SaleDataSection({
 
                     <TextField
                         fullWidth
-                        value="19/10/2022 - 14:25"
+                        type="datetime-local"
+                        value={saleDate}
+                        onChange={(event) => {
+                            onSaleDateChange(event.target.value);
+                        }}
                         sx={inputSx}
                     />
                 </Box>
@@ -71,10 +103,27 @@ export function SaleDataSection({
                         Escolha um vendedor
                     </Typography>
 
-                    <TextField select fullWidth value="" sx={inputSx}>
+                    <TextField
+                        select
+                        fullWidth
+                        value={selectedSellerId}
+                        onChange={(event) => {
+                            onSellerChange(Number(event.target.value));
+                        }}
+                        sx={inputSx}
+                    >
                         <MenuItem value="" disabled>
                             Selecione o nome
                         </MenuItem>
+
+                        {sellers.map((seller) => (
+                            <MenuItem
+                                key={seller.id}
+                                value={seller.id}
+                            >
+                                {seller.id} - {seller.nome}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Box>
 
@@ -90,10 +139,27 @@ export function SaleDataSection({
                         Escolha um cliente
                     </Typography>
 
-                    <TextField select fullWidth value="" sx={inputSx}>
+                    <TextField
+                        select
+                        fullWidth
+                        value={selectedClientId}
+                        onChange={(event) => {
+                            onClientChange(Number(event.target.value));
+                        }}
+                        sx={inputSx}
+                    >
                         <MenuItem value="" disabled>
                             Selecione o nome
                         </MenuItem>
+
+                        {clients.map((client) => (
+                            <MenuItem
+                                key={client.id}
+                                value={client.id}
+                            >
+                                {client.id} - {client.nome}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Box>
             </Box>
@@ -134,7 +200,7 @@ export function SaleDataSection({
                             fontWeight: 700,
                         }}
                     >
-                        R$ 0,00
+                        {formatCurrency(totalValue)}
                     </Typography>
                 </Box>
 
@@ -155,7 +221,7 @@ export function SaleDataSection({
 
                     <Button
                         variant="contained"
-                        disabled
+                        disabled={!canSubmit}
                         sx={disabledButtonSx}
                     >
                         Finalizar

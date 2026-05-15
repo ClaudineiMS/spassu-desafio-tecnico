@@ -9,7 +9,7 @@ import type {
     VendedorResumo,
 } from "../../../types/venda";
 
-interface SaleItem {
+export interface SaleItem {
     produto: ProdutoResumo;
     quantidade: number;
 }
