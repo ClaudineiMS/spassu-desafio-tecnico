@@ -5,6 +5,7 @@ import type { JSX } from "react";
 
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { SideMenu } from "./components/SideMenu/SideMenu";
+import { SaleFormPage } from "./pages/Vendas/SaleFormPage";
 import { VendasPage } from "./pages/Vendas/VendasPage";
 
 function App(): JSX.Element {
@@ -21,6 +22,15 @@ function App(): JSX.Element {
 
     function handleNavigate(title: string): void {
         setPageTitle(title);
+        setIsMenuOpen(false);
+    }
+
+    function handleCreateSale(): void {
+        setPageTitle("Nova Venda");
+    }
+
+    function handleCancelSale(): void {
+        setPageTitle("Vendas");
     }
 
     return (
@@ -60,7 +70,13 @@ function App(): JSX.Element {
                         },
                     }}
                 >
-                    {pageTitle === "Vendas" && <VendasPage />}
+                    {pageTitle === "Vendas" && (
+                        <VendasPage onCreateSale={handleCreateSale} />
+                    )}
+
+                    {pageTitle === "Nova Venda" && (
+                        <SaleFormPage onCancel={handleCancelSale} />
+                    )}
 
                     {pageTitle === "Comissões" && (
                         <Box

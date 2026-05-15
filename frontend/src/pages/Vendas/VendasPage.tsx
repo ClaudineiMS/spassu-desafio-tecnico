@@ -17,6 +17,10 @@ import {
     formatarMoeda,
 } from "./utils/vendasFormatters";
 
+interface VendasPageProps {
+    onCreateSale: () => void;
+}
+
 type VendaTableRow =
     | {
         type: "venda";
@@ -40,7 +44,9 @@ const headerFontSx = {
     fontWeight: "bold",
 };
 
-export function VendasPage(): JSX.Element {
+export function VendasPage({
+    onCreateSale,
+}: VendasPageProps): JSX.Element {
     const [expandedVendaId, setExpandedVendaId] = useState<number | null>(null);
 
     const {
@@ -197,6 +203,7 @@ export function VendasPage(): JSX.Element {
                     title="Inserir nova Venda"
                     backgroundColor="#00585E"
                     hoverColor="#004A50"
+                    onClick={onCreateSale}
                 />
             </Box>
 
