@@ -1,14 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { listarVendas } from "../../../services/vendasService";
+import {
+    listarVendas,
+    removerVenda,
+} from "../../../services/vendasService";
 import type { Venda } from "../../../types/venda";
 
 interface UseVendasResult {
     vendas: Venda[];
     isLoading: boolean;
     isLoadingMore: boolean;
+    isDeleting: boolean;
     errorMessage: string | null;
+    deleteErrorMessage: string | null;
+    selectedVendaIdToDelete: number | null;
     carregarProximaPagina: () => Promise<void>;
+    openDeleteDialog: (vendaId: number) => void;
+    closeDeleteDialog: () => void;
+    handleDeleteSale: () => Promise<boolean>;
 }
 
 export function useVendas(): UseVendasResult {
@@ -16,7 +25,14 @@ export function useVendas(): UseVendasResult {
     const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
+        null,
+    );
+    const [selectedVendaIdToDelete, setSelectedVendaIdToDelete] = useState<
+        number | null
+    >(null);
 
     const carregarPrimeiraPagina = useCallback(async (): Promise<void> => {
         try {
@@ -56,6 +72,47 @@ export function useVendas(): UseVendasResult {
         }
     }, [isLoadingMore, nextPageUrl]);
 
+    function openDeleteDialog(vendaId: number): void {
+        setSelectedVendaIdToDelete(vendaId);
+        setDeleteErrorMessage(null);
+    }
+
+    function closeDeleteDialog(): void {
+        if (isDeleting) {
+            return;
+        }
+
+        setSelectedVendaIdToDelete(null);
+    }
+
+    async function handleDeleteSale(): Promise<boolean> {
+        if (!selectedVendaIdToDelete) {
+            return false;
+        }
+
+        try {
+            setIsDeleting(true);
+            setDeleteErrorMessage(null);
+
+            await removerVenda(selectedVendaIdToDelete);
+
+            setVendas((currentVendas) => (
+                currentVendas.filter(
+                    (venda) => venda.id !== selectedVendaIdToDelete,
+                )
+            ));
+
+            setSelectedVendaIdToDelete(null);
+
+            return true;
+        } catch {
+            setDeleteErrorMessage("Não foi possível remover a venda.");
+            return false;
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     useEffect(() => {
         carregarPrimeiraPagina();
     }, [carregarPrimeiraPagina]);
@@ -64,7 +121,13 @@ export function useVendas(): UseVendasResult {
         vendas,
         isLoading,
         isLoadingMore,
+        isDeleting,
         errorMessage,
+        deleteErrorMessage,
+        selectedVendaIdToDelete,
         carregarProximaPagina,
+        openDeleteDialog,
+        closeDeleteDialog,
+        handleDeleteSale,
     };
 }

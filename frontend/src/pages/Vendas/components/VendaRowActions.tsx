@@ -15,6 +15,7 @@ interface VendaRowActionsProps {
     venda: Venda;
     isExpanded: boolean;
     onToggleDetails: (vendaId: number) => void;
+    onDeleteSale: (vendaId: number) => void;
 }
 
 const actionButtonSx = {
@@ -33,6 +34,7 @@ export function VendaRowActions({
     venda,
     isExpanded,
     onToggleDetails,
+    onDeleteSale,
 }: VendaRowActionsProps): JSX.Element {
     return (
         <Box
@@ -83,6 +85,7 @@ export function VendaRowActions({
                 <IconButton
                     aria-label="Excluir venda"
                     size="small"
+                    onClick={() => onDeleteSale(venda.id)}
                     sx={{ color: "#C40000" }}
                 >
                     <DeleteIcon fontSize="small" />

@@ -43,6 +43,10 @@ function App(): JSX.Element {
         setFeedbackMessage(null);
     }
 
+    function handleShowFeedback(message: string): void {
+        setFeedbackMessage(message);
+    }
+
     return (
         <>
             <CssBaseline />
@@ -85,6 +89,7 @@ function App(): JSX.Element {
                             onCreateSale={handleCreateSale}
                             feedbackMessage={feedbackMessage}
                             onClearFeedback={handleClearFeedback}
+                            onShowFeedback={handleShowFeedback}
                         />
                     )}
 

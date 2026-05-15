@@ -57,3 +57,8 @@ export async function criarVenda(
 
     return response.data;
 }
+
+
+export async function removerVenda(id: number): Promise<void> {
+    await api.delete(`/vendas/${id}/`);
+}

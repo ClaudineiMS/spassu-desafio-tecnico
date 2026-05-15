@@ -17,11 +17,12 @@ import {
     formatarMoeda,
 } from "./utils/vendasFormatters";
 import { FeedbackToast } from "../../components/FeedbackToast/FeedbackToast";
-
+import { DeleteSaleDialog } from "./components/DeleteSaleDialog";
 interface VendasPageProps {
     onCreateSale: () => void;
     feedbackMessage?: string | null;
     onClearFeedback?: () => void;
+    onShowFeedback?: (message: string) => void;
 }
 
 type VendaTableRow =
@@ -51,6 +52,7 @@ export function VendasPage({
     onCreateSale,
     feedbackMessage,
     onClearFeedback,
+    onShowFeedback
 }: VendasPageProps): JSX.Element {
     const [expandedVendaId, setExpandedVendaId] = useState<number | null>(null);
 
@@ -58,8 +60,14 @@ export function VendasPage({
         vendas,
         isLoading,
         isLoadingMore,
+        isDeleting,
         errorMessage,
+        deleteErrorMessage,
+        selectedVendaIdToDelete,
         carregarProximaPagina,
+        openDeleteDialog,
+        closeDeleteDialog,
+        handleDeleteSale,
     } = useVendas();
 
     function handleToggleDetails(vendaId: number): void {
@@ -87,6 +95,14 @@ export function VendasPage({
             return rows;
         });
     }, [vendas, expandedVendaId]);
+
+    async function handleConfirmDeleteSale(): Promise<void> {
+        const wasDeleted = await handleDeleteSale();
+
+        if (wasDeleted) {
+            onShowFeedback?.("VENDA REMOVIDA COM SUCESSO!");
+        }
+    }
 
     const columns = useMemo<VirtualizedTableColumn<VendaTableRow>[]>(
         () => [
@@ -148,6 +164,7 @@ export function VendasPage({
                         venda={row.venda}
                         isExpanded={expandedVendaId === row.venda.id}
                         onToggleDetails={handleToggleDetails}
+                        onDeleteSale={openDeleteDialog}
                     />
                 ),
             },
@@ -251,6 +268,24 @@ export function VendasPage({
                     onClearFeedback?.();
                 }}
             />
+
+            <DeleteSaleDialog
+                open={selectedVendaIdToDelete !== null}
+                isDeleting={isDeleting}
+                onClose={closeDeleteDialog}
+                onConfirm={handleConfirmDeleteSale}
+            />
+
+            {deleteErrorMessage && (
+                <Alert
+                    severity="error"
+                    sx={{
+                        mt: 2,
+                    }}
+                >
+                    {deleteErrorMessage}
+                </Alert>
+            )}
         </Box>
     );
 }
