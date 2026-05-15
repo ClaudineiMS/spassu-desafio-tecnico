@@ -22,6 +22,8 @@ export interface VirtualizedTableColumn<T> {
     label: string;
     align?: "left" | "center" | "right";
     width?: number | string;
+    hidden?: (row: T) => boolean;
+    colSpan?: number | ((row: T) => number);
     render: (row: T) => ReactNode;
 }
 
@@ -140,18 +142,27 @@ export function VirtualizedTable<T>({
     function renderRow(_index: number, row: T): JSX.Element {
         return (
             <>
-                {columns.map((column) => (
-                    <TableCell
-                        key={`${getRowKey(row)}-${column.key}`}
-                        align={column.align ?? "left"}
-                        sx={{
-                            width: column.width,
-                            ...bodyCellSx,
-                        }}
-                    >
-                        {column.render(row)}
-                    </TableCell>
-                ))}
+                {columns
+                    .filter((column) => !column.hidden?.(row))
+                    .map((column) => {
+                        const colSpan = typeof column.colSpan === "function"
+                            ? column.colSpan(row)
+                            : column.colSpan;
+
+                        return (
+                            <TableCell
+                                key={`${getRowKey(row)}-${column.key}`}
+                                align={column.align ?? "left"}
+                                colSpan={colSpan}
+                                sx={{
+                                    width: column.width,
+                                    ...bodyCellSx,
+                                }}
+                            >
+                                {column.render(row)}
+                            </TableCell>
+                        );
+                    })}
             </>
         );
     }

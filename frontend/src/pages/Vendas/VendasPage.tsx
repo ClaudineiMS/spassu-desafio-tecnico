@@ -1,38 +1,31 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import {
-    Alert,
-    Box,
-    Button,
-    IconButton,
-    Tooltip,
-    Typography,
-} from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import editarIcon from "../../assets/editar.png";
 import { ActionButton } from "../../components/Buttons/ActionButton";
 import { VirtualizedTable } from "../../components/DataTable/VirtualizedTable";
 import type { VirtualizedTableColumn } from "../../components/DataTable/VirtualizedTable";
 import { ErrorState } from "../../components/ErrorState/ErrorState";
 import { LoadingState } from "../../components/LoadingState/LoadingState";
-import { listarVendas } from "../../services/vendasService";
 import type { Venda } from "../../types/venda";
+import { VendaDetails } from "./components/VendaDetails";
+import { VendaRowActions } from "./components/VendaRowActions";
+import { useVendas } from "./hooks/useVendas";
+import {
+    formatarDataHora,
+    formatarMoeda,
+} from "./utils/vendasFormatters";
 
-function formatarDataHora(dataHora: string): string {
-    const data = new Date(dataHora);
-
-    const dataFormatada = new Intl.DateTimeFormat("pt-BR", {
-        dateStyle: "short",
-    }).format(data);
-
-    const horaFormatada = new Intl.DateTimeFormat("pt-BR", {
-        timeStyle: "short",
-    }).format(data);
-
-    return `${dataFormatada} - ${horaFormatada}`;
-}
+type VendaTableRow =
+    | {
+        type: "venda";
+        venda: Venda;
+    }
+    | {
+        type: "detalhes";
+        venda: Venda;
+    };
 
 const bodyCellSx = {
     borderBottom: "1px solid #8A8A8A",
@@ -47,98 +40,89 @@ const headerFontSx = {
     fontWeight: "bold",
 };
 
-const actionButtonSx = {
-    color: "#00585E",
-    fontWeight: 700,
-    textTransform: "none",
-    minWidth: "auto",
-    p: 0,
-    "&:hover": {
-        backgroundColor: "transparent",
-        textDecoration: "underline",
-    },
-};
-
 export function VendasPage(): JSX.Element {
-    const [vendas, setVendas] = useState<Venda[]>([]);
-    const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [expandedVendaId, setExpandedVendaId] = useState<number | null>(null);
 
-    const carregarPrimeiraPagina = useCallback(async (): Promise<void> => {
-        try {
-            setIsLoading(true);
-            setErrorMessage(null);
+    const {
+        vendas,
+        isLoading,
+        isLoadingMore,
+        errorMessage,
+        carregarProximaPagina,
+    } = useVendas();
 
-            const data = await listarVendas();
+    function handleToggleDetails(vendaId: number): void {
+        setExpandedVendaId((currentId) => (
+            currentId === vendaId ? null : vendaId
+        ));
+    }
 
-            setVendas(data.results);
-            setNextPageUrl(data.next);
-        } catch {
-            setErrorMessage("Não foi possível carregar as vendas.");
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+    const tableRows = useMemo<VendaTableRow[]>(() => {
+        return vendas.flatMap((venda) => {
+            const rows: VendaTableRow[] = [
+                {
+                    type: "venda",
+                    venda,
+                },
+            ];
 
-    const carregarProximaPagina = useCallback(async (): Promise<void> => {
-        if (!nextPageUrl || isLoadingMore) {
-            return;
-        }
+            if (expandedVendaId === venda.id) {
+                rows.push({
+                    type: "detalhes",
+                    venda,
+                });
+            }
 
-        try {
-            setIsLoadingMore(true);
+            return rows;
+        });
+    }, [vendas, expandedVendaId]);
 
-            const data = await listarVendas(nextPageUrl);
-
-            setVendas((currentVendas) => [
-                ...currentVendas,
-                ...data.results,
-            ]);
-            setNextPageUrl(data.next);
-        } catch {
-            setErrorMessage("Não foi possível carregar mais vendas.");
-        } finally {
-            setIsLoadingMore(false);
-        }
-    }, [isLoadingMore, nextPageUrl]);
-
-    const columns = useMemo<VirtualizedTableColumn<Venda>[]>(
+    const columns = useMemo<VirtualizedTableColumn<VendaTableRow>[]>(
         () => [
             {
                 key: "numero_nota_fiscal",
                 label: "Nota Fiscal",
                 width: "14%",
-                render: (venda) => venda.numero_nota_fiscal,
+                colSpan: (row) => row.type === "detalhes" ? 6 : 1,
+                render: (row) => {
+                    if (row.type === "detalhes") {
+                        return <VendaDetails venda={row.venda} />;
+                    }
+
+                    return row.venda.numero_nota_fiscal;
+                },
             },
             {
                 key: "cliente",
                 label: "Cliente",
                 width: "18%",
-                render: (venda) => venda.cliente_nome,
+                hidden: (row) => row.type === "detalhes",
+                render: (row) => row.venda.cliente_nome,
             },
             {
                 key: "vendedor",
                 label: "Vendedor",
                 width: "18%",
-                render: (venda) => venda.vendedor_nome,
+                hidden: (row) => row.type === "detalhes",
+                render: (row) => row.venda.vendedor_nome,
             },
             {
                 key: "data_hora",
                 label: "Data da Venda",
                 align: "center",
                 width: "18%",
-                render: (venda) => formatarDataHora(venda.data_hora),
+                hidden: (row) => row.type === "detalhes",
+                render: (row) => formatarDataHora(row.venda.data_hora),
             },
             {
                 key: "valor_total",
                 label: "Valor Total",
                 align: "center",
                 width: "14%",
-                render: (venda) => (
+                hidden: (row) => row.type === "detalhes",
+                render: (row) => (
                     <Typography>
-                        R$ {venda.valor_total}
+                        {formatarMoeda(row.venda.valor_total)}
                     </Typography>
                 ),
             },
@@ -147,69 +131,18 @@ export function VendasPage(): JSX.Element {
                 label: "Opções",
                 align: "center",
                 width: "18%",
-                render: () => (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: {
-                                xs: 0.5,
-                                sm: 1,
-                                md: 1.5,
-                            },
-                            whiteSpace: "nowrap",
-                        }}
-                    >
-                        <Button
-                            variant="text"
-                            size="large"
-                            sx={actionButtonSx}
-                        >
-                            Ver itens
-                        </Button>
-
-                        <Tooltip title="Editar venda">
-                            <IconButton
-                                aria-label="Editar venda"
-                                size="small"
-                                sx={{
-                                    p: 0.5,
-                                }}
-                            >
-                                <Box
-                                    component="img"
-                                    src={editarIcon}
-                                    alt="Editar venda"
-                                    sx={{
-                                        width: 20,
-                                        height: 20,
-                                        display: "block",
-                                        objectFit: "contain",
-                                    }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Excluir venda">
-                            <IconButton
-                                aria-label="Excluir venda"
-                                size="small"
-                                sx={{ color: "#C40000" }}
-                            >
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
+                hidden: (row) => row.type === "detalhes",
+                render: (row) => (
+                    <VendaRowActions
+                        venda={row.venda}
+                        isExpanded={expandedVendaId === row.venda.id}
+                        onToggleDetails={handleToggleDetails}
+                    />
                 ),
             },
         ],
-        [],
+        [expandedVendaId],
     );
-
-    useEffect(() => {
-        carregarPrimeiraPagina();
-    }, [carregarPrimeiraPagina]);
 
     if (isLoading) {
         return <LoadingState message="Carregando vendas..." />;
@@ -275,9 +208,9 @@ export function VendasPage(): JSX.Element {
                 }}
             >
                 <VirtualizedTable
-                    rows={vendas}
+                    rows={tableRows}
                     columns={columns}
-                    getRowKey={(venda) => venda.id}
+                    getRowKey={(row) => `${row.type}-${row.venda.id}`}
                     ariaLabel="Tabela de vendas"
                     minWidth={800}
                     isLoadingMore={isLoadingMore}

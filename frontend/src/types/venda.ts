@@ -21,9 +21,13 @@ export interface ProdutoResumo {
 }
 
 export interface ItemVenda {
-    id?: number;
-    produto: number | ProdutoResumo;
-    quantidade: number
+    id: number;
+    produto: number;
+    produto_descricao: string;
+    quantidade: number;
+    valor_unitario: string;
+    percentual_comissao: string;
+    valor_total: number;
 }
 
 export interface Venda {
@@ -31,11 +35,11 @@ export interface Venda {
     numero_nota_fiscal: string;
     data_hora: string;
     cliente: number;
-    cliente_nome: string,
+    cliente_nome: string;
     vendedor: number;
-    vendedor_nome: string,
-    itens: ItemVenda[],
-    valor_total: number
+    vendedor_nome: string;
+    itens: ItemVenda[];
+    valor_total: number;
 }
 
 export interface PaginatedResponse<T> {
