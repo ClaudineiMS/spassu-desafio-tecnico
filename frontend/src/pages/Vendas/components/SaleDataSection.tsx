@@ -9,7 +9,6 @@ import type { JSX } from "react";
 
 import type { ClienteResumo, VendedorResumo } from "../../../types/venda";
 import {
-    disabledButtonSx,
     inputSx,
     primaryButtonSx,
     sectionTitleSx,
