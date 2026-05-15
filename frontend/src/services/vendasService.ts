@@ -62,3 +62,12 @@ export async function criarVenda(
 export async function removerVenda(id: number): Promise<void> {
     await api.delete(`/vendas/${id}/`);
 }
+
+export async function atualizarVenda(
+    id: number,
+    payload: CriarVendaPayload,
+): Promise<Venda> {
+    const response = await api.put<Venda>(`/vendas/${id}/`, payload);
+
+    return response.data;
+}

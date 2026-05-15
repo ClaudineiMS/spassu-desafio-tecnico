@@ -6,15 +6,20 @@ import { LoadingState } from "../../components/LoadingState/LoadingState";
 import { SaleDataSection } from "./components/SaleDataSection";
 import { SaleProductSection } from "./components/SaleProductSection";
 import { useSaleForm } from "./hooks/useSaleForm";
+import type { Venda } from "../../types/venda";
 
 interface SaleFormPageProps {
     onCancel: () => void;
     onSaleCreated: () => void;
+    initialSale?: Venda | null;
+    onSaleUpdated: () => void;
 }
 
 export function SaleFormPage({
     onCancel,
     onSaleCreated,
+    initialSale = null,
+    onSaleUpdated,
 }: SaleFormPageProps): JSX.Element {
     const {
         searchTerm,
@@ -41,14 +46,22 @@ export function SaleFormPage({
         handleAddItem,
         handleRemoveItem,
         handleSubmit,
-    } = useSaleForm();
+        isEditing
+    } = useSaleForm({ initialSale });
 
     async function handleFinalizeSale(): Promise<void> {
-        const wasCreated = await handleSubmit();
+        const wasSaved = await handleSubmit();
 
-        if (wasCreated) {
-            onSaleCreated();
+        if (!wasSaved) {
+            return;
         }
+
+        if (isEditing) {
+            onSaleUpdated();
+            return;
+        }
+
+        onSaleCreated();
     }
 
     if (isLoadingInitialData) {
@@ -99,6 +112,7 @@ export function SaleFormPage({
                 totalValue={totalValue}
                 canSubmit={canSubmit}
                 isSubmitting={isSubmitting}
+                isEditing={isEditing}
                 onSaleDateChange={setSaleDate}
                 onClientChange={setSelectedClientId}
                 onSellerChange={setSelectedSellerId}

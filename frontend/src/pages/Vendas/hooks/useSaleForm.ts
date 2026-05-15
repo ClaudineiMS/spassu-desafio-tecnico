@@ -2,17 +2,22 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { listarClientes } from "../../../services/clientesService";
 import { listarProdutos } from "../../../services/produtosService";
-import { criarVenda } from "../../../services/vendasService";
+import { criarVenda, atualizarVenda } from "../../../services/vendasService";
 import { listarVendedores } from "../../../services/vendedoresService";
 import type {
     ClienteResumo,
     ProdutoResumo,
     VendedorResumo,
 } from "../../../types/venda";
+import type { Venda } from "../../../types/venda";
 
 export interface SaleItem {
     produto: ProdutoResumo;
     quantidade: number;
+}
+
+interface UseSaleFormParams {
+    initialSale?: Venda | null;
 }
 
 interface UseSaleFormResult {
@@ -40,6 +45,7 @@ interface UseSaleFormResult {
     handleAddItem: () => void;
     handleRemoveItem: (productId: number) => void;
     handleSubmit: () => Promise<boolean>;
+    isEditing: boolean;
 }
 
 function getCurrentDateTimeValue(): string {
@@ -62,20 +68,44 @@ function converterDataParaIso(data: string): string {
     return new Date(data).toISOString();
 }
 
-export function useSaleForm(): UseSaleFormResult {
+export function useSaleForm({ initialSale = null,
+}: UseSaleFormParams = {}): UseSaleFormResult {
     const [searchTerm, setSearchTerm] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [selectedProductId, setSelectedProductId] = useState<number | "">("");
-    const [selectedClientId, setSelectedClientId] = useState<number | "">("");
-    const [selectedSellerId, setSelectedSellerId] = useState<number | "">("");
-    const [saleDate, setSaleDate] = useState(getCurrentDateTimeValue());
+    const [selectedClientId, setSelectedClientId] = useState<number | "">(
+        initialSale?.cliente ?? "",
+    );
+    const [selectedSellerId, setSelectedSellerId] = useState<number | "">(
+        initialSale?.vendedor ?? "",
+    );
+    const [saleDate, setSaleDate] = useState(
+        initialSale
+            ? initialSale.data_hora.slice(0, 16)
+            : getCurrentDateTimeValue(),
+    );
     const [products, setProducts] = useState<ProdutoResumo[]>([]);
     const [clients, setClients] = useState<ClienteResumo[]>([]);
     const [sellers, setSellers] = useState<VendedorResumo[]>([]);
-    const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
+    const [saleItems, setSaleItems] = useState<SaleItem[]>(
+        initialSale
+            ? initialSale.itens.map((item) => ({
+                produto: {
+                    id: item.produto,
+                    codigo: String(item.produto),
+                    descricao: item.produto_descricao,
+                    valor_unitario: item.valor_unitario,
+                    percentual_comissao: item.percentual_comissao,
+                },
+                quantidade: item.quantidade,
+            }))
+            : [],
+    );
     const [isLoadingInitialData, setIsLoadingInitialData] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const isEditing = Boolean(initialSale);
+
 
     const totalValue = useMemo(() => {
         return saleItems.reduce(
@@ -192,8 +222,10 @@ export function useSaleForm(): UseSaleFormResult {
             setIsSubmitting(true);
             setErrorMessage(null);
 
-            await criarVenda({
-                numero_nota_fiscal: gerarNumeroNotaFiscal(),
+            const payload = {
+                numero_nota_fiscal: initialSale
+                    ? initialSale.numero_nota_fiscal
+                    : gerarNumeroNotaFiscal(),
                 data_hora: converterDataParaIso(saleDate),
                 cliente: selectedClientId,
                 vendedor: selectedSellerId,
@@ -201,11 +233,22 @@ export function useSaleForm(): UseSaleFormResult {
                     produto: item.produto.id,
                     quantidade: item.quantidade,
                 })),
-            });
+            };
+
+            if (initialSale) {
+                await atualizarVenda(initialSale.id, payload);
+            } else {
+                await criarVenda(payload);
+            }
 
             return true;
         } catch {
-            setErrorMessage("Não foi possível finalizar a venda.");
+            setErrorMessage(
+                initialSale
+                    ? "Não foi possível atualizar a venda."
+                    : "Não foi possível finalizar a venda.",
+            );
+
             return false;
         } finally {
             setIsSubmitting(false);
@@ -251,5 +294,6 @@ export function useSaleForm(): UseSaleFormResult {
         handleAddItem,
         handleRemoveItem,
         handleSubmit,
+        isEditing
     };
 }

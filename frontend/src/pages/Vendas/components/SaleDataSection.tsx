@@ -29,6 +29,7 @@ interface SaleDataSectionProps {
     onSellerChange: (value: number | "") => void;
     onCancel: () => void;
     onSubmit: () => void;
+    isEditing: boolean;
 }
 
 function formatCurrency(value: number): string {
@@ -52,6 +53,7 @@ export function SaleDataSection({
     onSellerChange,
     onCancel,
     onSubmit,
+    isEditing,
 }: SaleDataSectionProps): JSX.Element {
     return (
         <Box
@@ -229,7 +231,11 @@ export function SaleDataSection({
                         onClick={onSubmit}
                         sx={submitButtonSx}
                     >
-                        {isSubmitting ? "Finalizando..." : "Finalizar"}
+                        {isSubmitting
+                            ? "Finalizando..."
+                            : isEditing
+                                ? "Atualizar"
+                                : "Finalizar"}
                     </Button>
                 </Box>
             </Box>

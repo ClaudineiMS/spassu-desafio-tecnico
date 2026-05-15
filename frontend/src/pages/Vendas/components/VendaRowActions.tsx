@@ -16,6 +16,7 @@ interface VendaRowActionsProps {
     isExpanded: boolean;
     onToggleDetails: (vendaId: number) => void;
     onDeleteSale: (vendaId: number) => void;
+    onEditSale: (venda: Venda) => void;
 }
 
 const actionButtonSx = {
@@ -35,6 +36,7 @@ export function VendaRowActions({
     isExpanded,
     onToggleDetails,
     onDeleteSale,
+    onEditSale,
 }: VendaRowActionsProps): JSX.Element {
     return (
         <Box
@@ -63,6 +65,7 @@ export function VendaRowActions({
                 <IconButton
                     aria-label="Editar venda"
                     size="small"
+                    onClick={() => onEditSale(venda)}
                     sx={{
                         p: 0.5,
                     }}

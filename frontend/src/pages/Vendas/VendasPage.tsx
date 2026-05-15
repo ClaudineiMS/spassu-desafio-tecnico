@@ -18,8 +18,11 @@ import {
 } from "./utils/vendasFormatters";
 import { FeedbackToast } from "../../components/FeedbackToast/FeedbackToast";
 import { DeleteSaleDialog } from "./components/DeleteSaleDialog";
+
+
 interface VendasPageProps {
     onCreateSale: () => void;
+    onEditSale: (venda: Venda) => void;
     feedbackMessage?: string | null;
     onClearFeedback?: () => void;
     onShowFeedback?: (message: string) => void;
@@ -50,9 +53,10 @@ const headerFontSx = {
 
 export function VendasPage({
     onCreateSale,
+    onEditSale,
     feedbackMessage,
     onClearFeedback,
-    onShowFeedback
+    onShowFeedback,
 }: VendasPageProps): JSX.Element {
     const [expandedVendaId, setExpandedVendaId] = useState<number | null>(null);
 
@@ -165,6 +169,7 @@ export function VendasPage({
                         isExpanded={expandedVendaId === row.venda.id}
                         onToggleDetails={handleToggleDetails}
                         onDeleteSale={openDeleteDialog}
+                        onEditSale={onEditSale}
                     />
                 ),
             },
@@ -254,7 +259,19 @@ export function VendasPage({
                 <Alert
                     severity="info"
                     sx={{
-                        mt: 3,
+                        position: "absolute",
+                        top: {
+                      
+                            sm: 300,
+                            
+                        },
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: {
+                            xs: "calc(100% - 32px)",
+                            sm: 500,
+                        },
+                        justifyContent: "center",
                     }}
                 >
                     Nenhuma venda encontrada.
