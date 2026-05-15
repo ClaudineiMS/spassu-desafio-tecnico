@@ -46,3 +46,20 @@ export const sectionTitleSx: SxProps<Theme> = {
     },
     fontWeight: 400,
 };
+
+export const submitButtonSx = {
+    minHeight: 44,
+    px: 4,
+    borderRadius: "4px",
+    fontWeight: 700,
+    textTransform: "none",
+    backgroundColor: "#00585E",
+    color: "#ffffff",
+    "&:hover": {
+        backgroundColor: "#004A50",
+    },
+    "&.Mui-disabled": {
+        backgroundColor: "#B7D4D8",
+        color: "#ffffff",
+    },
+};

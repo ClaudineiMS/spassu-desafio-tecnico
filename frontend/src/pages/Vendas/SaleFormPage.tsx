@@ -9,10 +9,12 @@ import { useSaleForm } from "./hooks/useSaleForm";
 
 interface SaleFormPageProps {
     onCancel: () => void;
+    onSaleCreated: () => void;
 }
 
 export function SaleFormPage({
     onCancel,
+    onSaleCreated,
 }: SaleFormPageProps): JSX.Element {
     const {
         searchTerm,
@@ -28,6 +30,7 @@ export function SaleFormPage({
         totalValue,
         canSubmit,
         isLoadingInitialData,
+        isSubmitting,
         errorMessage,
         setSearchTerm,
         setQuantity,
@@ -37,7 +40,16 @@ export function SaleFormPage({
         setSaleDate,
         handleAddItem,
         handleRemoveItem,
+        handleSubmit,
     } = useSaleForm();
+
+    async function handleFinalizeSale(): Promise<void> {
+        const wasCreated = await handleSubmit();
+
+        if (wasCreated) {
+            onSaleCreated();
+        }
+    }
 
     if (isLoadingInitialData) {
         return <LoadingState message="Carregando dados da venda..." />;
@@ -86,10 +98,12 @@ export function SaleFormPage({
                 sellers={sellers}
                 totalValue={totalValue}
                 canSubmit={canSubmit}
+                isSubmitting={isSubmitting}
                 onSaleDateChange={setSaleDate}
                 onClientChange={setSelectedClientId}
                 onSellerChange={setSelectedSellerId}
                 onCancel={onCancel}
+                onSubmit={handleFinalizeSale}
             />
         </Box>
     );

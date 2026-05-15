@@ -33,6 +33,10 @@ function App(): JSX.Element {
         setPageTitle("Vendas");
     }
 
+    function handleSaleCreated(): void {
+        setPageTitle("Vendas");
+    }
+
     return (
         <>
             <CssBaseline />
@@ -75,7 +79,10 @@ function App(): JSX.Element {
                     )}
 
                     {pageTitle === "Nova Venda" && (
-                        <SaleFormPage onCancel={handleCancelSale} />
+                        <SaleFormPage
+                            onCancel={handleCancelSale}
+                            onSaleCreated={handleSaleCreated}
+                        />
                     )}
 
                     {pageTitle === "Comissões" && (

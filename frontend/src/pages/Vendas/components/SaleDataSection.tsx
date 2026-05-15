@@ -13,6 +13,7 @@ import {
     inputSx,
     primaryButtonSx,
     sectionTitleSx,
+    submitButtonSx
 } from "../styles/saleFormStyles";
 
 interface SaleDataSectionProps {
@@ -23,10 +24,12 @@ interface SaleDataSectionProps {
     sellers: VendedorResumo[];
     totalValue: number;
     canSubmit: boolean;
+    isSubmitting: boolean;
     onSaleDateChange: (value: string) => void;
     onClientChange: (value: number | "") => void;
     onSellerChange: (value: number | "") => void;
     onCancel: () => void;
+    onSubmit: () => void;
 }
 
 function formatCurrency(value: number): string {
@@ -44,10 +47,12 @@ export function SaleDataSection({
     sellers,
     totalValue,
     canSubmit,
+    isSubmitting,
     onSaleDateChange,
     onClientChange,
     onSellerChange,
     onCancel,
+    onSubmit,
 }: SaleDataSectionProps): JSX.Element {
     return (
         <Box
@@ -221,10 +226,11 @@ export function SaleDataSection({
 
                     <Button
                         variant="contained"
-                        disabled={!canSubmit}
-                        sx={disabledButtonSx}
+                        disabled={!canSubmit || isSubmitting}
+                        onClick={onSubmit}
+                        sx={submitButtonSx}
                     >
-                        Finalizar
+                        {isSubmitting ? "Finalizando..." : "Finalizar"}
                     </Button>
                 </Box>
             </Box>

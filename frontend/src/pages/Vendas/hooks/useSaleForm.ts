@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { listarClientes } from "../../../services/clientesService";
 import { listarProdutos } from "../../../services/produtosService";
+import { criarVenda } from "../../../services/vendasService";
 import { listarVendedores } from "../../../services/vendedoresService";
 import type {
     ClienteResumo,
@@ -28,6 +29,7 @@ interface UseSaleFormResult {
     totalValue: number;
     canSubmit: boolean;
     isLoadingInitialData: boolean;
+    isSubmitting: boolean;
     errorMessage: string | null;
     setSearchTerm: (value: string) => void;
     setQuantity: (value: number) => void;
@@ -37,6 +39,7 @@ interface UseSaleFormResult {
     setSaleDate: (value: string) => void;
     handleAddItem: () => void;
     handleRemoveItem: (productId: number) => void;
+    handleSubmit: () => Promise<boolean>;
 }
 
 function getCurrentDateTimeValue(): string {
@@ -51,6 +54,14 @@ function calculateItemTotal(item: SaleItem): number {
     return Number(item.produto.valor_unitario) * item.quantidade;
 }
 
+function gerarNumeroNotaFiscal(): string {
+    return `NF-${Date.now()}`;
+}
+
+function converterDataParaIso(data: string): string {
+    return new Date(data).toISOString();
+}
+
 export function useSaleForm(): UseSaleFormResult {
     const [searchTerm, setSearchTerm] = useState("");
     const [quantity, setQuantity] = useState(0);
@@ -63,6 +74,7 @@ export function useSaleForm(): UseSaleFormResult {
     const [sellers, setSellers] = useState<VendedorResumo[]>([]);
     const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
     const [isLoadingInitialData, setIsLoadingInitialData] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const totalValue = useMemo(() => {
@@ -78,8 +90,15 @@ export function useSaleForm(): UseSaleFormResult {
             && selectedClientId !== ""
             && selectedSellerId !== ""
             && Boolean(saleDate)
+            && !isSubmitting
         );
-    }, [saleItems.length, selectedClientId, selectedSellerId, saleDate]);
+    }, [
+        saleItems.length,
+        selectedClientId,
+        selectedSellerId,
+        saleDate,
+        isSubmitting,
+    ]);
 
     const loadInitialData = useCallback(async (): Promise<void> => {
         try {
@@ -164,6 +183,35 @@ export function useSaleForm(): UseSaleFormResult {
         ));
     }
 
+    async function handleSubmit(): Promise<boolean> {
+        if (!canSubmit || selectedClientId === "" || selectedSellerId === "") {
+            return false;
+        }
+
+        try {
+            setIsSubmitting(true);
+            setErrorMessage(null);
+
+            await criarVenda({
+                numero_nota_fiscal: gerarNumeroNotaFiscal(),
+                data_hora: converterDataParaIso(saleDate),
+                cliente: selectedClientId,
+                vendedor: selectedSellerId,
+                itens: saleItems.map((item) => ({
+                    produto: item.produto.id,
+                    quantidade: item.quantidade,
+                })),
+            });
+
+            return true;
+        } catch {
+            setErrorMessage("Não foi possível finalizar a venda.");
+            return false;
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
     useEffect(() => {
         loadInitialData();
     }, [loadInitialData]);
@@ -192,6 +240,7 @@ export function useSaleForm(): UseSaleFormResult {
         totalValue,
         canSubmit,
         isLoadingInitialData,
+        isSubmitting,
         errorMessage,
         setSearchTerm,
         setQuantity,
@@ -201,5 +250,6 @@ export function useSaleForm(): UseSaleFormResult {
         setSaleDate,
         handleAddItem,
         handleRemoveItem,
+        handleSubmit,
     };
 }

@@ -3,6 +3,19 @@ import type { PaginatedResponse, Venda } from "../types/venda";
 
 type VendasApiResponse = Venda[] | PaginatedResponse<Venda>;
 
+export interface CriarItemVendaPayload {
+    produto: number;
+    quantidade: number;
+}
+
+export interface CriarVendaPayload {
+    numero_nota_fiscal: string;
+    data_hora: string;
+    cliente: number;
+    vendedor: number;
+    itens: CriarItemVendaPayload[];
+}
+
 function isPaginatedResponse(
     data: VendasApiResponse,
 ): data is PaginatedResponse<Venda> {
@@ -35,4 +48,12 @@ export async function listarVendas(
         previous: null,
         results: response.data,
     };
+}
+
+export async function criarVenda(
+    payload: CriarVendaPayload,
+): Promise<Venda> {
+    const response = await api.post<Venda>("/vendas/", payload);
+
+    return response.data;
 }
