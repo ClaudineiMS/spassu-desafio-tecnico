@@ -1,4 +1,3 @@
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import {
