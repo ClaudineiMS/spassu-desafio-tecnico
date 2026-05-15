@@ -1,28 +1,20 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { forwardRef, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
     Alert,
     Box,
     Button,
-    CircularProgress,
     IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Tooltip,
     Typography,
 } from "@mui/material";
 import type { JSX } from "react";
-import { TableVirtuoso } from "react-virtuoso";
-import type { TableComponents } from "react-virtuoso";
 
 import editarIcon from "../../assets/editar.png";
 import { ActionButton } from "../../components/Buttons/ActionButton";
+import { VirtualizedTable } from "../../components/DataTable/VirtualizedTable";
+import type { VirtualizedTableColumn } from "../../components/DataTable/VirtualizedTable";
 import { ErrorState } from "../../components/ErrorState/ErrorState";
 import { LoadingState } from "../../components/LoadingState/LoadingState";
 import { listarVendas } from "../../services/vendasService";
@@ -66,156 +58,6 @@ const actionButtonSx = {
         textDecoration: "underline",
     },
 };
-
-const tableComponents: TableComponents<Venda> = {
-    Scroller: forwardRef<HTMLDivElement>((props, ref) => (
-        <TableContainer
-            component={Paper}
-            elevation={0}
-            {...props}
-            ref={ref}
-            sx={{
-                width: "100%",
-                height: "100%",
-                overflow: "auto",
-                borderRadius: 0,
-                boxShadow: "none",
-                backgroundColor: "transparent",
-            }}
-        />
-    )),
-    Table: (props) => (
-        <Table
-            {...props}
-            stickyHeader
-            sx={{
-                minWidth: 800,
-                borderCollapse: "separate",
-                tableLayout: "fixed",
-            }}
-            aria-label="Tabela de vendas"
-        />
-    ),
-    TableHead: forwardRef<HTMLTableSectionElement>((props, ref) => (
-        <TableHead {...props} ref={ref} />
-    )),
-    TableRow,
-    TableBody: forwardRef<HTMLTableSectionElement>((props, ref) => (
-        <TableBody {...props} ref={ref} />
-    )),
-};
-
-function renderHeader(): JSX.Element {
-    return (
-        <TableRow>
-            <TableCell align="left" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Nota Fiscal</Typography>
-            </TableCell>
-
-            <TableCell align="left" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Cliente</Typography>
-            </TableCell>
-
-            <TableCell align="left" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Vendedor</Typography>
-            </TableCell>
-
-            <TableCell align="center" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Data da Venda</Typography>
-            </TableCell>
-
-            <TableCell align="center" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Valor Total</Typography>
-            </TableCell>
-
-            <TableCell align="center" sx={headerCellSx}>
-                <Typography sx={headerFontSx}>Opções</Typography>
-            </TableCell>
-        </TableRow>
-    );
-}
-
-function renderVenda(_index: number, venda: Venda): JSX.Element {
-    return (
-        <>
-            <TableCell align="left" sx={bodyCellSx}>
-                {venda.numero_nota_fiscal}
-            </TableCell>
-
-            <TableCell align="left" sx={bodyCellSx}>
-                {venda.cliente_nome}
-            </TableCell>
-
-            <TableCell align="left" sx={bodyCellSx}>
-                {venda.vendedor_nome}
-            </TableCell>
-
-            <TableCell align="center" sx={bodyCellSx}>
-                {formatarDataHora(venda.data_hora)}
-            </TableCell>
-
-            <TableCell align="center" sx={bodyCellSx}>
-                <Typography>R$ {venda.valor_total}</Typography>
-            </TableCell>
-
-            <TableCell align="center" sx={bodyCellSx}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: {
-                            xs: 0.5,
-                            sm: 1,
-                            md: 1.5,
-                        },
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    <Button
-                        variant="text"
-                        size="large"
-                        sx={actionButtonSx}
-                    >
-                        Ver itens
-                    </Button>
-
-                    <Tooltip title="Editar venda">
-                        <IconButton
-                            aria-label="Editar venda"
-                            size="small"
-                            sx={{
-                                p: 0.5,
-                            }}
-                        >
-                            <Box
-                                component="img"
-                                src={editarIcon}
-                                alt="Editar venda"
-                                sx={{
-                                    width: 20,
-                                    height: 20,
-                                    display: "block",
-                                    objectFit: "contain",
-                                }}
-                            />
-                        </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Excluir venda">
-                        <IconButton
-                            aria-label="Excluir venda"
-                            size="small"
-                            sx={{ color: "#C40000" }}
-                        >
-                            <DeleteIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            </TableCell>
-        </>
-    );
-}
 
 export function VendasPage(): JSX.Element {
     const [vendas, setVendas] = useState<Venda[]>([]);
@@ -261,6 +103,109 @@ export function VendasPage(): JSX.Element {
             setIsLoadingMore(false);
         }
     }, [isLoadingMore, nextPageUrl]);
+
+    const columns = useMemo<VirtualizedTableColumn<Venda>[]>(
+        () => [
+            {
+                key: "numero_nota_fiscal",
+                label: "Nota Fiscal",
+                width: "14%",
+                render: (venda) => venda.numero_nota_fiscal,
+            },
+            {
+                key: "cliente",
+                label: "Cliente",
+                width: "18%",
+                render: (venda) => venda.cliente_nome,
+            },
+            {
+                key: "vendedor",
+                label: "Vendedor",
+                width: "18%",
+                render: (venda) => venda.vendedor_nome,
+            },
+            {
+                key: "data_hora",
+                label: "Data da Venda",
+                align: "center",
+                width: "18%",
+                render: (venda) => formatarDataHora(venda.data_hora),
+            },
+            {
+                key: "valor_total",
+                label: "Valor Total",
+                align: "center",
+                width: "14%",
+                render: (venda) => (
+                    <Typography>
+                        R$ {venda.valor_total}
+                    </Typography>
+                ),
+            },
+            {
+                key: "opcoes",
+                label: "Opções",
+                align: "center",
+                width: "18%",
+                render: () => (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: {
+                                xs: 0.5,
+                                sm: 1,
+                                md: 1.5,
+                            },
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        <Button
+                            variant="text"
+                            size="large"
+                            sx={actionButtonSx}
+                        >
+                            Ver itens
+                        </Button>
+
+                        <Tooltip title="Editar venda">
+                            <IconButton
+                                aria-label="Editar venda"
+                                size="small"
+                                sx={{
+                                    p: 0.5,
+                                }}
+                            >
+                                <Box
+                                    component="img"
+                                    src={editarIcon}
+                                    alt="Editar venda"
+                                    sx={{
+                                        width: 20,
+                                        height: 20,
+                                        display: "block",
+                                        objectFit: "contain",
+                                    }}
+                                />
+                            </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Excluir venda">
+                            <IconButton
+                                aria-label="Excluir venda"
+                                size="small"
+                                sx={{ color: "#C40000" }}
+                            >
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                ),
+            },
+        ],
+        [],
+    );
 
     useEffect(() => {
         carregarPrimeiraPagina();
@@ -329,35 +274,19 @@ export function VendasPage(): JSX.Element {
                     width: "100%",
                 }}
             >
-                <TableVirtuoso
-                    data={vendas}
-                    components={tableComponents}
-                    fixedHeaderContent={renderHeader}
-                    itemContent={renderVenda}
-                    endReached={carregarProximaPagina}
-                    increaseViewportBy={300}
-                    style={{
-                        height: "100%",
-                    }}
+                <VirtualizedTable
+                    rows={vendas}
+                    columns={columns}
+                    getRowKey={(venda) => venda.id}
+                    ariaLabel="Tabela de vendas"
+                    minWidth={800}
+                    isLoadingMore={isLoadingMore}
+                    onEndReached={carregarProximaPagina}
+                    headerCellSx={headerCellSx}
+                    bodyCellSx={bodyCellSx}
+                    headerTextSx={headerFontSx}
                 />
             </Box>
-
-            {isLoadingMore && (
-                <Box
-                    sx={{
-                        py: 1.5,
-                        display: "flex",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CircularProgress
-                        size={24}
-                        sx={{
-                            color: "#00585E",
-                        }}
-                    />
-                </Box>
-            )}
 
             {!vendas.length && (
                 <Alert
