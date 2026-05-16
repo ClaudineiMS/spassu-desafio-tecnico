@@ -101,7 +101,7 @@ export function VendaDetails({ venda }: VendaDetailsProps): JSX.Element {
                     </Typography>
 
                     <Typography align="center">
-                        {formatarPercentual(item.percentual_comissao)}
+                        {formatarPercentual(item.percentual_comissao_aplicado)}
                     </Typography>
 
                     <Typography align="center">

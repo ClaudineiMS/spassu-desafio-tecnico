@@ -3,10 +3,7 @@ import type { Venda } from "../../../types/venda";
 type ItemVenda = Venda["itens"][number];
 
 export function calcularComissaoItem(item: ItemVenda): number {
-    const valorTotal = Number(item.valor_total);
-    const percentualComissao = Number(item.percentual_comissao);
-
-    return valorTotal * percentualComissao / 100;
+    return Number(item.valor_comissao);
 }
 
 export function calcularQuantidadeTotal(venda: Venda): number {

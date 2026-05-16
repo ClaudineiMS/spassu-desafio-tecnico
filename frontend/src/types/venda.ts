@@ -27,7 +27,9 @@ export interface ItemVenda {
     quantidade: number;
     valor_unitario: string;
     percentual_comissao: string;
-    valor_total: number;
+    percentual_comissao_aplicado: string;
+    valor_total: number | string;
+    valor_comissao: number | string;
 }
 
 export interface Venda {

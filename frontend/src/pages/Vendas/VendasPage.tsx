@@ -261,9 +261,7 @@ export function VendasPage({
                     sx={{
                         position: "absolute",
                         top: {
-                      
                             sm: 300,
-                            
                         },
                         left: "50%",
                         transform: "translateX(-50%)",
