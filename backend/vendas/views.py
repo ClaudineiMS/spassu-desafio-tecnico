@@ -7,6 +7,7 @@ from vendas.docs.vendedores import vendedor_schema
 from vendas.docs.comissoes import comissao_schema
 from vendas.docs.vendas import venda_schema
 from vendas.docs.produtos import produto_schema
+from rest_framework import filters
 
 from .models import Cliente, Produto, Venda, Vendedor
 from .serializers import ClienteSerializer, ProdutoSerializer, VendaSerializer, VendedorSerializer
@@ -15,16 +16,22 @@ from .serializers import ClienteSerializer, ProdutoSerializer, VendaSerializer, 
 class VendedorViewSet(viewsets.ModelViewSet):
     queryset = Vendedor.objects.all().order_by('nome')
     serializer_class = VendedorSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['nome', 'email', 'telefone']
 
 @cliente_schema    
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all().order_by('nome')
     serializer_class = ClienteSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['nome', 'email', 'telefone']
     
 @produto_schema
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all().order_by('descricao')
     serializer_class = ProdutoSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['codigo', 'descricao']
     
 @venda_schema
 class VendaViewSet(viewsets.ModelViewSet):
