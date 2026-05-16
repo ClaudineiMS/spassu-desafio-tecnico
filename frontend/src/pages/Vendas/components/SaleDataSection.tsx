@@ -19,7 +19,7 @@ import {
 interface SaleDataSectionProps {
     saleDate: string;
     selectedClient: ClienteResumo | null;
-    selectedSellerId: number | "";
+    selectedSeller: VendedorResumo | null;
     clients: ClienteResumo[];
     sellers: VendedorResumo[];
     totalValue: number;
@@ -27,10 +27,12 @@ interface SaleDataSectionProps {
     isSubmitting: boolean;
     isEditing: boolean;
     clientSearchTerm: string;
+    sellerSearchTerm: string;
     onSaleDateChange: (value: string) => void;
     onClientChange: (value: ClienteResumo | null) => void;
     onClientSearchChange: (value: string) => void;
-    onSellerChange: (value: number | "") => void;
+    onSellerChange: (value: VendedorResumo | null) => void;
+    onSellerSearchChange: (value: string) => void;
     onCancel: () => void;
     onSubmit: () => void;
 }
@@ -45,7 +47,7 @@ function formatCurrency(value: number): string {
 export function SaleDataSection({
     saleDate,
     selectedClient,
-    selectedSellerId,
+    selectedSeller,
     clients,
     sellers,
     totalValue,
@@ -53,10 +55,12 @@ export function SaleDataSection({
     isSubmitting,
     isEditing,
     clientSearchTerm,
+    sellerSearchTerm,
     onSaleDateChange,
     onClientChange,
     onClientSearchChange,
     onSellerChange,
+    onSellerSearchChange,
     onCancel,
     onSubmit,
 }: SaleDataSectionProps): JSX.Element {
@@ -114,30 +118,34 @@ export function SaleDataSection({
                         Escolha um vendedor
                     </Typography>
 
-                    <TextField
-                        select
-                        fullWidth
-                        value={selectedSellerId}
-                        onChange={(event) => {
-                            onSellerChange(Number(event.target.value));
+                    <Autocomplete
+                        options={sellers}
+                        value={selectedSeller}
+                        inputValue={sellerSearchTerm}
+                        getOptionLabel={(seller) => `${seller.id} - ${seller.nome}`}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        onInputChange={(_, value, reason) => {
+                            if (reason === "input") {
+                                onSellerSearchChange(value);
+                            }
+
+                            if (reason === "clear") {
+                                onSellerChange(null);
+                            }
                         }}
-                        sx={inputSx}
-                    >
-                        <MenuItem value="" disabled>
-                            Selecione o nome
-                        </MenuItem>
-
-                        {sellers.map((seller) => (
-                            <MenuItem
-                                key={seller.id}
-                                value={seller.id}
-                            >
-                                {seller.id} - {seller.nome}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        onChange={(_, value) => {
+                            onSellerChange(value);
+                        }}
+                        noOptionsText="Nenhum vendedor encontrado"
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                placeholder="Selecione o nome"
+                                sx={inputSx}
+                            />
+                        )}
+                    />
                 </Box>
-
                 <Box>
                     <Typography
                         component="label"

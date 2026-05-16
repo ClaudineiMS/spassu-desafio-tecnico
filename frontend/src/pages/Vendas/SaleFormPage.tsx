@@ -25,8 +25,6 @@ export function SaleFormPage({
         searchTerm,
         quantity,
         selectedProductId,
-        selectedClientId,
-        selectedSellerId,
         saleDate,
         products,
         clients,
@@ -41,10 +39,7 @@ export function SaleFormPage({
         setSearchTerm,
         setQuantity,
         setSelectedProductId,
-        setSelectedClientId,
-        setSelectedSellerId,
         setSaleDate,
-        setClientSearchTerm,
         handleAddItem,
         handleRemoveItem,
         handleSubmit,
@@ -52,6 +47,10 @@ export function SaleFormPage({
         selectedClient,
         handleClientChange,
         handleClientSearchChange,
+        selectedSeller,
+        sellerSearchTerm,
+        handleSellerChange,
+        handleSellerSearchChange,
     } = useSaleForm({ initialSale });
 
     async function handleFinalizeSale(): Promise<void> {
@@ -111,7 +110,7 @@ export function SaleFormPage({
             <SaleDataSection
                 saleDate={saleDate}
                 selectedClient={selectedClient}
-                selectedSellerId={selectedSellerId}
+                selectedSeller={selectedSeller}
                 clients={clients}
                 sellers={sellers}
                 totalValue={totalValue}
@@ -119,10 +118,12 @@ export function SaleFormPage({
                 isSubmitting={isSubmitting}
                 isEditing={isEditing}
                 clientSearchTerm={clientSearchTerm}
+                sellerSearchTerm={sellerSearchTerm}
                 onSaleDateChange={setSaleDate}
                 onClientChange={handleClientChange}
                 onClientSearchChange={handleClientSearchChange}
-                onSellerChange={setSelectedSellerId}
+                onSellerChange={handleSellerChange}
+                onSellerSearchChange={handleSellerSearchChange}
                 onCancel={onCancel}
                 onSubmit={handleFinalizeSale}
             />

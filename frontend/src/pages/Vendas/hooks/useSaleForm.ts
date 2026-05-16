@@ -53,6 +53,9 @@ interface UseSaleFormResult {
     selectedClient: ClienteResumo | null;
     handleClientChange: (client: ClienteResumo | null) => void;
     handleClientSearchChange: (value: string) => void;
+    selectedSeller: VendedorResumo | null;
+    handleSellerChange: (seller: VendedorResumo | null) => void;
+    handleSellerSearchChange: (value: string) => void;
 }
 
 function getCurrentDateTimeValue(): string {
@@ -134,6 +137,16 @@ export function useSaleForm({ initialSale = null,
             0,
         );
     }, [saleItems]);
+    const initialSeller = initialSale
+        ? {
+            id: initialSale.vendedor,
+            nome: initialSale.vendedor_nome,
+        }
+        : null;
+    const [selectedSeller, setSelectedSeller] = useState<VendedorResumo | null>(
+        initialSeller,
+    );
+
 
     const canSubmit = useMemo(() => {
         return (
@@ -218,6 +231,24 @@ export function useSaleForm({ initialSale = null,
         if (selectedClient) {
             setSelectedClient(null);
             setSelectedClientId("");
+        }
+    }
+
+    function handleSellerChange(seller: VendedorResumo | null): void {
+        setSelectedSeller(seller);
+        setSelectedSellerId(seller?.id ?? "");
+
+        setSellerSearchTerm(
+            seller ? `${seller.id} - ${seller.nome}` : "",
+        );
+    }
+
+    function handleSellerSearchChange(value: string): void {
+        setSellerSearchTerm(value);
+
+        if (selectedSeller) {
+            setSelectedSeller(null);
+            setSelectedSellerId("");
         }
     }
 
@@ -391,5 +422,8 @@ export function useSaleForm({ initialSale = null,
         selectedClient,
         handleClientChange,
         handleClientSearchChange,
+        selectedSeller,
+        handleSellerChange,
+        handleSellerSearchChange,
     };
 }
