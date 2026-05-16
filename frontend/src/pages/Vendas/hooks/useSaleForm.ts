@@ -116,7 +116,6 @@ export function useSaleForm({ initialSale = null,
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const isEditing = Boolean(initialSale);
-    const [sellerSearchTerm, setSellerSearchTerm] = useState("");
     const initialClient = initialSale
         ? {
             id: initialSale.cliente,
@@ -147,12 +146,16 @@ export function useSaleForm({ initialSale = null,
         ? {
             id: initialSale.vendedor,
             nome: initialSale.vendedor_nome,
+            email: undefined,
+            telefone: undefined,
         }
         : null;
     const [selectedSeller, setSelectedSeller] = useState<VendedorResumo | null>(
         initialSeller,
     );
-
+    const [sellerSearchTerm, setSellerSearchTerm] = useState(
+        initialSeller ? `${initialSeller.id} - ${initialSeller.nome}` : "",
+    );
 
     const canSubmit = useMemo(() => {
         return (
@@ -446,6 +449,6 @@ export function useSaleForm({ initialSale = null,
         productSearchTerm,
         selectedProduct,
         handleProductChange,
-        handleProductSearchChange,
+        handleProductSearchChange
     };
 }
