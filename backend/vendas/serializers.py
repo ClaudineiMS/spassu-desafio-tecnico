@@ -1,5 +1,10 @@
 from rest_framework import serializers
 from .models import Cliente, ItemVenda, Produto, Venda, Vendedor
+from vendas.services.comissoes import (
+    calcular_comissao_item,
+    obter_percentual_comissao_aplicado,
+)
+from decimal import Decimal
 
 class VendedorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -117,6 +122,8 @@ class ItemVendaSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     valor_total = serializers.SerializerMethodField()
+    percentual_comissao_aplicado = serializers.SerializerMethodField()
+    valor_comissao = serializers.SerializerMethodField()
 
     class Meta:
         model = ItemVenda
@@ -127,26 +134,28 @@ class ItemVendaSerializer(serializers.ModelSerializer):
             'quantidade',
             'valor_unitario',
             'percentual_comissao',
+            'percentual_comissao_aplicado',
             'valor_total',
-        ]
-        read_only_fields = [
-            'id',
-            'produto_descricao',
-            'valor_unitario',
-            'percentual_comissao',
-            'valor_total',
+            'valor_comissao',
         ]
 
     def get_valor_total(self, obj):
-        return obj.quantidade * obj.produto.valor_unitario
+        total = obj.quantidade * obj.produto.valor_unitario
 
-    def validate_quantidade(self, value):
-        if value <= 0:
-            raise serializers.ValidationError(
-                'A quantidade deve ser maior que zero.'
-            )
+        return total.quantize(Decimal('0.01'))
 
-        return value
+    def get_percentual_comissao_aplicado(self, obj):
+        percentual = obter_percentual_comissao_aplicado(
+            produto=obj.produto,
+            data_hora=obj.venda.data_hora,
+        )
+
+        return percentual.quantize(Decimal('0.01'))
+
+    def get_valor_comissao(self, obj):
+        comissao = calcular_comissao_item(obj)
+
+        return comissao.quantize(Decimal('0.01'))
     
 class VendaSerializer(serializers.ModelSerializer):
     itens = ItemVendaSerializer(many=True)
