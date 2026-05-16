@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': (                                       
         'rest_framework.pagination.PageNumberPagination'               # habilita paginação nas APIs
     ),
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': config('PAGE_SIZE',default=10,cast=int)
 }
 
 SPECTACULAR_SETTINGS = {
