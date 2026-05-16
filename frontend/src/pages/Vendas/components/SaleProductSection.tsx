@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProdutoResumo } from "../../../types/venda";
@@ -11,27 +11,27 @@ import {
 import { SaleItemsTable } from "./SaleItemsTable";
 
 interface SaleProductSectionProps {
-    searchTerm: string;
+    productSearchTerm: string;
     quantity: number;
-    selectedProductId: number | "";
+    selectedProduct: ProdutoResumo | null;
     products: ProdutoResumo[];
     saleItems: SaleItem[];
-    onSearchTermChange: (value: string) => void;
+    onProductSearchChange: (value: string) => void;
     onQuantityChange: (value: number) => void;
-    onProductSelect: (value: number | "") => void;
+    onProductChange: (value: ProdutoResumo | null) => void;
     onAddItem: () => void;
     onRemoveItem: (productId: number) => void;
 }
 
 export function SaleProductSection({
-    searchTerm,
+    productSearchTerm,
     quantity,
-    selectedProductId,
+    selectedProduct,
     products,
     saleItems,
-    onSearchTermChange,
+    onProductSearchChange,
     onQuantityChange,
-    onProductSelect,
+    onProductChange,
     onAddItem,
     onRemoveItem,
 }: SaleProductSectionProps): JSX.Element {
@@ -82,34 +82,37 @@ export function SaleProductSection({
                         Buscar pelo código de barras ou descrição
                     </Typography>
 
-                    <TextField
-                        select
-                        fullWidth
-                        value={selectedProductId}
-                        placeholder="Digite o código ou nome do produto"
-                        onChange={(event) => {
-                            onProductSelect(Number(event.target.value));
-                        }}
-                        onInput={(event) => {
-                            const target = event.target as HTMLInputElement;
+                    <Autocomplete
+                        options={products}
+                        value={selectedProduct}
+                        inputValue={productSearchTerm}
+                        getOptionLabel={(product) => (
+                            `${product.codigo} - ${product.descricao}`
+                        )}
+                        isOptionEqualToValue={(option, value) => (
+                            option.id === value.id
+                        )}
+                        onInputChange={(_, value, reason) => {
+                            if (reason === "input") {
+                                onProductSearchChange(value);
+                            }
 
-                            onSearchTermChange(target.value);
+                            if (reason === "clear") {
+                                onProductChange(null);
+                            }
                         }}
-                        sx={inputSx}
-                    >
-                        <MenuItem value="" disabled>
-                            {searchTerm || "Digite o código ou nome do produto"}
-                        </MenuItem>
-
-                        {products.map((product) => (
-                            <MenuItem
-                                key={product.id}
-                                value={product.id}
-                            >
-                                {product.codigo} - {product.descricao}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        onChange={(_, value) => {
+                            onProductChange(value);
+                        }}
+                        noOptionsText="Nenhum produto encontrado"
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                placeholder="Digite o código ou nome do produto"
+                                sx={inputSx}
+                            />
+                        )}
+                    />
                 </Box>
 
                 <Box>

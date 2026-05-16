@@ -22,9 +22,7 @@ export function SaleFormPage({
     onSaleUpdated,
 }: SaleFormPageProps): JSX.Element {
     const {
-        searchTerm,
         quantity,
-        selectedProductId,
         saleDate,
         products,
         clients,
@@ -36,9 +34,7 @@ export function SaleFormPage({
         isSubmitting,
         errorMessage,
         clientSearchTerm,
-        setSearchTerm,
         setQuantity,
-        setSelectedProductId,
         setSaleDate,
         handleAddItem,
         handleRemoveItem,
@@ -51,6 +47,10 @@ export function SaleFormPage({
         sellerSearchTerm,
         handleSellerChange,
         handleSellerSearchChange,
+        productSearchTerm,
+        selectedProduct,
+        handleProductChange,
+        handleProductSearchChange,
     } = useSaleForm({ initialSale });
 
     async function handleFinalizeSale(): Promise<void> {
@@ -95,14 +95,14 @@ export function SaleFormPage({
             }}
         >
             <SaleProductSection
-                searchTerm={searchTerm}
+                productSearchTerm={productSearchTerm}
                 quantity={quantity}
-                selectedProductId={selectedProductId}
+                selectedProduct={selectedProduct}
                 products={products}
                 saleItems={saleItems}
-                onSearchTermChange={setSearchTerm}
+                onProductSearchChange={handleProductSearchChange}
                 onQuantityChange={setQuantity}
-                onProductSelect={setSelectedProductId}
+                onProductChange={handleProductChange}
                 onAddItem={handleAddItem}
                 onRemoveItem={handleRemoveItem}
             />

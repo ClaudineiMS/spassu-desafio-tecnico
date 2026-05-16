@@ -10,6 +10,16 @@ export const inputSx: SxProps<Theme> = {
         py: 1.2,
         fontSize: "15px",
     },
+    "& .MuiAutocomplete-inputRoot": {
+        minHeight: "43px !important",
+        paddingTop: "0 !important",
+        paddingBottom: "0 !important",
+    },
+    "& .MuiAutocomplete-input": {
+        paddingTop: "9.5px !important",
+        paddingBottom: "9.5px !important",
+        fontSize: "15px",
+    },
 };
 
 export const primaryButtonSx: SxProps<Theme> = {

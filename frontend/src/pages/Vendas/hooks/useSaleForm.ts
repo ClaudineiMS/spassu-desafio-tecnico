@@ -21,7 +21,6 @@ interface UseSaleFormParams {
 }
 
 interface UseSaleFormResult {
-    searchTerm: string;
     quantity: number;
     selectedProductId: number | "";
     selectedClientId: number | "";
@@ -36,9 +35,7 @@ interface UseSaleFormResult {
     isLoadingInitialData: boolean;
     isSubmitting: boolean;
     errorMessage: string | null;
-    setSearchTerm: (value: string) => void;
     setQuantity: (value: number) => void;
-    setSelectedProductId: (value: number | "") => void;
     setSelectedClientId: (value: number | "") => void;
     setSelectedSellerId: (value: number | "") => void;
     setSaleDate: (value: string) => void;
@@ -56,6 +53,10 @@ interface UseSaleFormResult {
     selectedSeller: VendedorResumo | null;
     handleSellerChange: (seller: VendedorResumo | null) => void;
     handleSellerSearchChange: (value: string) => void;
+    productSearchTerm: string;
+    selectedProduct: ProdutoResumo | null;
+    handleProductChange: (product: ProdutoResumo | null) => void;
+    handleProductSearchChange: (value: string) => void;
 }
 
 function getCurrentDateTimeValue(): string {
@@ -131,6 +132,11 @@ export function useSaleForm({ initialSale = null,
         initialClient ? `${initialClient.id} - ${initialClient.nome}` : "",
     );
 
+    const [productSearchTerm, setProductSearchTerm] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState<ProdutoResumo | null>(
+        null,
+    );
+
     const totalValue = useMemo(() => {
         return saleItems.reduce(
             (total, item) => total + calculateItemTotal(item),
@@ -188,13 +194,13 @@ export function useSaleForm({ initialSale = null,
 
     const searchProducts = useCallback(async (): Promise<void> => {
         try {
-            const response = await listarProdutos(searchTerm);
+            const response = await listarProdutos(productSearchTerm);
 
             setProducts(response.results);
         } catch {
             setErrorMessage("Não foi possível buscar os produtos.");
         }
-    }, [searchTerm]);
+    }, [productSearchTerm]);
 
     const searchClients = useCallback(async (): Promise<void> => {
         try {
@@ -215,6 +221,24 @@ export function useSaleForm({ initialSale = null,
             setErrorMessage("Não foi possível buscar os vendedores.");
         }
     }, [sellerSearchTerm]);
+
+    function handleProductChange(product: ProdutoResumo | null): void {
+        setSelectedProduct(product);
+        setSelectedProductId(product?.id ?? "");
+
+        setProductSearchTerm(
+            product ? `${product.codigo} - ${product.descricao}` : "",
+        );
+    }
+
+    function handleProductSearchChange(value: string): void {
+        setProductSearchTerm(value);
+
+        if (selectedProduct) {
+            setSelectedProduct(null);
+            setSelectedProductId("");
+        }
+    }
 
     function handleClientChange(client: ClienteResumo | null): void {
         setSelectedClient(client);
@@ -257,10 +281,6 @@ export function useSaleForm({ initialSale = null,
             return;
         }
 
-        const selectedProduct = products.find(
-            (product) => product.id === selectedProductId,
-        );
-
         if (!selectedProduct) {
             return;
         }
@@ -292,9 +312,10 @@ export function useSaleForm({ initialSale = null,
             });
         });
 
+        setSelectedProduct(null);
         setSelectedProductId("");
         setQuantity(0);
-        setSearchTerm("");
+        setProductSearchTerm("");
     }
 
     function handleRemoveItem(productId: number): void {
@@ -390,7 +411,6 @@ export function useSaleForm({ initialSale = null,
     }, [searchSellers]);
 
     return {
-        searchTerm,
         quantity,
         selectedProductId,
         selectedClientId,
@@ -405,9 +425,7 @@ export function useSaleForm({ initialSale = null,
         isLoadingInitialData,
         isSubmitting,
         errorMessage,
-        setSearchTerm,
         setQuantity,
-        setSelectedProductId,
         setSelectedClientId,
         setSelectedSellerId,
         setSaleDate,
@@ -425,5 +443,9 @@ export function useSaleForm({ initialSale = null,
         selectedSeller,
         handleSellerChange,
         handleSellerSearchChange,
+        productSearchTerm,
+        selectedProduct,
+        handleProductChange,
+        handleProductSearchChange,
     };
 }
