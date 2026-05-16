@@ -46,6 +46,13 @@ interface UseSaleFormResult {
     handleRemoveItem: (productId: number) => void;
     handleSubmit: () => Promise<boolean>;
     isEditing: boolean;
+    clientSearchTerm: string;
+    sellerSearchTerm: string;
+    setClientSearchTerm: (value: string) => void;
+    setSellerSearchTerm: (value: string) => void;
+    selectedClient: ClienteResumo | null;
+    handleClientChange: (client: ClienteResumo | null) => void;
+    handleClientSearchChange: (value: string) => void;
 }
 
 function getCurrentDateTimeValue(): string {
@@ -105,7 +112,21 @@ export function useSaleForm({ initialSale = null,
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const isEditing = Boolean(initialSale);
+    const [sellerSearchTerm, setSellerSearchTerm] = useState("");
+    const initialClient = initialSale
+        ? {
+            id: initialSale.cliente,
+            nome: initialSale.cliente_nome,
+        }
+        : null;
 
+    const [selectedClient, setSelectedClient] = useState<ClienteResumo | null>(
+        initialClient,
+    );
+
+    const [clientSearchTerm, setClientSearchTerm] = useState(
+        initialClient ? `${initialClient.id} - ${initialClient.nome}` : "",
+    );
 
     const totalValue = useMemo(() => {
         return saleItems.reduce(
@@ -161,6 +182,44 @@ export function useSaleForm({ initialSale = null,
             setErrorMessage("Não foi possível buscar os produtos.");
         }
     }, [searchTerm]);
+
+    const searchClients = useCallback(async (): Promise<void> => {
+        try {
+            const response = await listarClientes(clientSearchTerm);
+
+            setClients(response.results);
+        } catch {
+            setErrorMessage("Não foi possível buscar os clientes.");
+        }
+    }, [clientSearchTerm]);
+
+    const searchSellers = useCallback(async (): Promise<void> => {
+        try {
+            const response = await listarVendedores(sellerSearchTerm);
+
+            setSellers(response.results);
+        } catch {
+            setErrorMessage("Não foi possível buscar os vendedores.");
+        }
+    }, [sellerSearchTerm]);
+
+    function handleClientChange(client: ClienteResumo | null): void {
+        setSelectedClient(client);
+        setSelectedClientId(client?.id ?? "");
+
+        setClientSearchTerm(
+            client ? `${client.id} - ${client.nome}` : "",
+        );
+    }
+
+    function handleClientSearchChange(value: string): void {
+        setClientSearchTerm(value);
+
+        if (selectedClient) {
+            setSelectedClient(null);
+            setSelectedClientId("");
+        }
+    }
 
     function handleAddItem(): void {
         if (!selectedProductId || quantity <= 0) {
@@ -269,6 +328,36 @@ export function useSaleForm({ initialSale = null,
         };
     }, [searchProducts]);
 
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            searchProducts();
+        }, 400);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [searchProducts]);
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            searchClients();
+        }, 400);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [searchClients]);
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            searchSellers();
+        }, 400);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [searchSellers]);
+
     return {
         searchTerm,
         quantity,
@@ -294,6 +383,13 @@ export function useSaleForm({ initialSale = null,
         handleAddItem,
         handleRemoveItem,
         handleSubmit,
-        isEditing
+        isEditing,
+        clientSearchTerm,
+        sellerSearchTerm,
+        setClientSearchTerm,
+        setSellerSearchTerm,
+        selectedClient,
+        handleClientChange,
+        handleClientSearchChange,
     };
 }

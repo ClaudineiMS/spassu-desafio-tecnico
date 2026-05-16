@@ -10,8 +10,12 @@ function isPaginatedResponse(
     return !Array.isArray(data) && Array.isArray(data.results);
 }
 
-export async function listarClientes(): Promise<PaginatedResponse<ClienteResumo>> {
-    const response = await api.get<ClientesApiResponse>("/clientes/");
+export async function listarClientes(
+    search?: string,
+): Promise<PaginatedResponse<ClienteResumo>> {
+    const response = await api.get<ClientesApiResponse>("/clientes/", {
+        params: search ? { search } : undefined,
+    });
 
     if (isPaginatedResponse(response.data)) {
         return response.data;

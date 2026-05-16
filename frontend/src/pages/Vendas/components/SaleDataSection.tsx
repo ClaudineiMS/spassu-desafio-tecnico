@@ -4,10 +4,11 @@ import {
     MenuItem,
     TextField,
     Typography,
+    Autocomplete
 } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ClienteResumo, VendedorResumo } from "../../../types/venda";
+import type { ClienteResumo, VendedorResumo, } from "../../../types/venda";
 import {
     inputSx,
     primaryButtonSx,
@@ -17,19 +18,21 @@ import {
 
 interface SaleDataSectionProps {
     saleDate: string;
-    selectedClientId: number | "";
+    selectedClient: ClienteResumo | null;
     selectedSellerId: number | "";
     clients: ClienteResumo[];
     sellers: VendedorResumo[];
     totalValue: number;
     canSubmit: boolean;
     isSubmitting: boolean;
+    isEditing: boolean;
+    clientSearchTerm: string;
     onSaleDateChange: (value: string) => void;
-    onClientChange: (value: number | "") => void;
+    onClientChange: (value: ClienteResumo | null) => void;
+    onClientSearchChange: (value: string) => void;
     onSellerChange: (value: number | "") => void;
     onCancel: () => void;
     onSubmit: () => void;
-    isEditing: boolean;
 }
 
 function formatCurrency(value: number): string {
@@ -41,19 +44,21 @@ function formatCurrency(value: number): string {
 
 export function SaleDataSection({
     saleDate,
-    selectedClientId,
+    selectedClient,
     selectedSellerId,
     clients,
     sellers,
     totalValue,
     canSubmit,
     isSubmitting,
+    isEditing,
+    clientSearchTerm,
     onSaleDateChange,
     onClientChange,
+    onClientSearchChange,
     onSellerChange,
     onCancel,
     onSubmit,
-    isEditing,
 }: SaleDataSectionProps): JSX.Element {
     return (
         <Box
@@ -145,28 +150,33 @@ export function SaleDataSection({
                         Escolha um cliente
                     </Typography>
 
-                    <TextField
-                        select
-                        fullWidth
-                        value={selectedClientId}
-                        onChange={(event) => {
-                            onClientChange(Number(event.target.value));
-                        }}
-                        sx={inputSx}
-                    >
-                        <MenuItem value="" disabled>
-                            Selecione o nome
-                        </MenuItem>
+                    <Autocomplete
+                        options={clients}
+                        value={selectedClient}
+                        inputValue={clientSearchTerm}
+                        getOptionLabel={(client) => `${client.id} - ${client.nome}`}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        onInputChange={(_, value, reason) => {
+                            if (reason === "input") {
+                                onClientSearchChange(value);
+                            }
 
-                        {clients.map((client) => (
-                            <MenuItem
-                                key={client.id}
-                                value={client.id}
-                            >
-                                {client.id} - {client.nome}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                            if (reason === "clear") {
+                                onClientChange(null);
+                            }
+                        }}
+                        onChange={(_, value) => {
+                            onClientChange(value);
+                        }}
+                        noOptionsText="Nenhum cliente encontrado"
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                placeholder="Selecione o nome"
+                                sx={inputSx}
+                            />
+                        )}
+                    />
                 </Box>
             </Box>
 
