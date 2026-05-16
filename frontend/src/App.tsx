@@ -8,6 +8,7 @@ import { SideMenu } from "./components/SideMenu/SideMenu";
 import { SaleFormPage } from "./pages/Vendas/SaleFormPage";
 import { VendasPage } from "./pages/Vendas/VendasPage";
 import type { Venda } from "./types/venda";
+import { CommissionsPage } from "./pages/Comissoes/CommissionsPage";
 
 function App(): JSX.Element {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -116,16 +117,7 @@ function App(): JSX.Element {
                         />
                     )}
 
-                    {pageTitle === "Comissões" && (
-                        <Box
-                            sx={{
-                                color: "#00585E",
-                                fontWeight: 700,
-                            }}
-                        >
-                            Página de comissões será implementada na próxima etapa.
-                        </Box>
-                    )}
+                    {pageTitle === "Comissões" && <CommissionsPage />}
                 </Box>
             </Box>
         </>
