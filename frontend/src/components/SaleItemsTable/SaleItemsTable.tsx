@@ -3,7 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { SaleItem } from "../hooks/useSaleForm";
+import type { SaleItem } from "../../hooks/useSaleForm";
 
 interface SaleItemsTableProps {
     items: SaleItem[];

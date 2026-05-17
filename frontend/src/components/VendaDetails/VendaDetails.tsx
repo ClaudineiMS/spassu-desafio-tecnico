@@ -1,17 +1,17 @@
 import { Box, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { Venda } from "../../../types/venda";
+import type { Venda } from "../../types/venda";
 import {
     calcularComissaoItem,
     calcularQuantidadeTotal,
     calcularTotalComissao,
     obterDescricaoProduto,
-} from "../utils/vendasCalculations";
+} from "../../utils/vendasCalculations";
 import {
     formatarMoeda,
     formatarPercentual,
-} from "../utils/vendasFormatters";
+} from "../../utils/vendasFormatters";
 
 interface VendaDetailsProps {
     venda: Venda;

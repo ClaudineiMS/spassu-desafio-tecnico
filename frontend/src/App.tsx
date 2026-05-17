@@ -5,7 +5,7 @@ import type { JSX } from "react";
 
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { SideMenu } from "./components/SideMenu/SideMenu";
-import { SaleFormPage } from "./pages/Vendas/SaleFormPage";
+import { SaleFormPage } from "./hooks/SaleFormPage";
 import { VendasPage } from "./pages/Vendas/VendasPage";
 import type { Venda } from "./types/venda";
 import { CommissionsPage } from "./pages/Comissoes/CommissionsPage";

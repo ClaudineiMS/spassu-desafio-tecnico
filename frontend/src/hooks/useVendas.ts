@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import {
     listarVendas,
     removerVenda,
-} from "../../../services/vendasService";
-import type { Venda } from "../../../types/venda";
+} from "../services/vendasService";
+import type { Venda } from "../types/venda";
 
 interface UseVendasResult {
     vendas: Venda[];

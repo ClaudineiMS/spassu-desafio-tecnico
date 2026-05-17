@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import type { JSX } from "react";
 
-import { ErrorState } from "../../components/ErrorState/ErrorState";
-import { LoadingState } from "../../components/LoadingState/LoadingState";
-import { SaleDataSection } from "./components/SaleDataSection";
-import { SaleProductSection } from "./components/SaleProductSection";
-import { useSaleForm } from "./hooks/useSaleForm";
-import type { Venda } from "../../types/venda";
+import { ErrorState } from "../components/ErrorState/ErrorState";
+import { LoadingState } from "../components/LoadingState/LoadingState";
+import { SaleDataSection } from "../components/SaleDataSection/SaleDataSection";
+import { SaleProductSection } from "../components/SaleProductSection/SaleProductSection";
+import { useSaleForm } from "./useSaleForm";
+import type { Venda } from "../types/venda";
 
 interface SaleFormPageProps {
     onCancel: () => void;

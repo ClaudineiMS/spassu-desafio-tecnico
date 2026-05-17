@@ -9,15 +9,15 @@ import type { VirtualizedTableColumn } from "../../components/DataTable/Virtuali
 import { ErrorState } from "../../components/ErrorState/ErrorState";
 import { LoadingState } from "../../components/LoadingState/LoadingState";
 import type { Venda } from "../../types/venda";
-import { VendaDetails } from "./components/VendaDetails";
-import { VendaRowActions } from "./components/VendaRowActions";
-import { useVendas } from "./hooks/useVendas";
+import { VendaDetails } from "../../components/VendaDetails/VendaDetails";
+import { VendaRowActions } from "../../components/VendaRowActions/VendaRowActions";
+import { useVendas } from "../../hooks/useVendas";
 import {
     formatarDataHora,
     formatarMoeda,
-} from "./utils/vendasFormatters";
+} from "../../utils/vendasFormatters";
 import { FeedbackToast } from "../../components/FeedbackToast/FeedbackToast";
-import { DeleteSaleDialog } from "./components/DeleteSaleDialog";
+import { DeleteSaleDialog } from "../../components/DeleteSaleDialog/DeleteSaleDialog";
 
 
 interface VendasPageProps {

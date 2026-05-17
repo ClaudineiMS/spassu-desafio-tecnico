@@ -1,14 +1,14 @@
-import { Autocomplete, Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, TextField, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProdutoResumo } from "../../../types/venda";
-import type { SaleItem } from "../hooks/useSaleForm";
+import type { ProdutoResumo } from "../../types/venda";
+import type { SaleItem } from "../../hooks/useSaleForm";
 import {
     inputSx,
     primaryButtonSx,
     sectionTitleSx,
-} from "../styles/saleFormStyles";
-import { SaleItemsTable } from "./SaleItemsTable";
+} from "../../styles/saleFormStyles";
+import { SaleItemsTable } from "../SaleItemsTable/SaleItemsTable";
 
 interface SaleProductSectionProps {
     productSearchTerm: string;

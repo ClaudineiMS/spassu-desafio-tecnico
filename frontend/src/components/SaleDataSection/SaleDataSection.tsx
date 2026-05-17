@@ -1,20 +1,19 @@
 import {
     Box,
     Button,
-    MenuItem,
     TextField,
     Typography,
     Autocomplete
 } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ClienteResumo, VendedorResumo, } from "../../../types/venda";
+import type { ClienteResumo, VendedorResumo, } from "../../types/venda";
 import {
     inputSx,
     primaryButtonSx,
     sectionTitleSx,
     submitButtonSx
-} from "../styles/saleFormStyles";
+} from "../../styles/saleFormStyles";
 
 interface SaleDataSectionProps {
     saleDate: string;

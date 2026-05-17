@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
-import editarIcon from "../../../assets/editar.png";
-import type { Venda } from "../../../types/venda";
+import editarIcon from "../../assets/editar.png";
+import type { Venda } from "../../types/venda";
 
 interface VendaRowActionsProps {
     venda: Venda;

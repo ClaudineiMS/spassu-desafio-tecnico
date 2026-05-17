@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { listarClientes } from "../../../services/clientesService";
-import { listarProdutos } from "../../../services/produtosService";
-import { criarVenda, atualizarVenda } from "../../../services/vendasService";
-import { listarVendedores } from "../../../services/vendedoresService";
+import { listarClientes } from "../services/clientesService";
+import { listarProdutos } from "../services/produtosService";
+import { criarVenda, atualizarVenda } from "../services/vendasService";
+import { listarVendedores } from "../services/vendedoresService";
 import type {
     ClienteResumo,
     ProdutoResumo,
     VendedorResumo,
-} from "../../../types/venda";
-import type { Venda } from "../../../types/venda";
+} from "../types/venda";
+import type { Venda } from "../types/venda";
 
 export interface SaleItem {
     produto: ProdutoResumo;
