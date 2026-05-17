@@ -14,11 +14,6 @@ python manage.py migrate --noinput
 echo "Criando superusuário padrão, se necessário..."
 python manage.py create_default_superuser
 
-if [ "$RUN_TESTS_ON_STARTUP" = "True" ]; then
-    echo "Executando testes automatizados..."
-    python manage.py test
-fi
-
 if [ "$LOAD_INITIAL_DATA" = "True" ]; then
     echo "Executando carga inicial de dados..."
     python manage.py seed_initial_data
