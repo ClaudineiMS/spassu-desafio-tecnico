@@ -232,18 +232,25 @@ export function getDatePickerSlotProps(placeholder: string) {
 }
 
 export const commissionHeaderCellSx: SxProps<Theme> = {
-    backgroundColor: "transparent",
+    position: "sticky",
+    top: 0,
+    zIndex: 10,
+    height: 48,
+    backgroundColor: "#f7f7f7",
     borderBottom: "1px solid #8A8A8A",
     py: 1.5,
     px: 0,
+    verticalAlign: "bottom",
+    boxSizing: "border-box",
 };
 
 export const commissionBodyCellSx: SxProps<Theme> = {
-    backgroundColor: "transparent",
+    backgroundColor: "#f7f7f7",
     borderBottom: "1px solid #8A8A8A",
     py: 1.5,
     px: 0,
     fontSize: "16px",
+    boxSizing: "border-box",
 };
 
 export const commissionHeaderTextSx: SxProps<Theme> = {
