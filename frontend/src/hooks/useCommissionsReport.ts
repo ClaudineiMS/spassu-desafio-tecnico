@@ -2,7 +2,7 @@ import type { Dayjs } from "dayjs";
 import { useState } from "react";
 
 import { listarComissoes } from "../services/comissoesService";
-import type { ComissaoVendedor } from "../types/venda";
+import type { ComissaoVendedor } from "../types/sales";
 
 interface UseCommissionsReportResult {
     startDate: Dayjs | null;

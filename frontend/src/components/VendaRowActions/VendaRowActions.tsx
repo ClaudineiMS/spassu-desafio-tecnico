@@ -9,7 +9,7 @@ import {
 import type { JSX } from "react";
 
 import editarIcon from "../../assets/editar.png";
-import type { Venda } from "../../types/venda";
+import type { Venda } from "../../types/sales";
 
 interface VendaRowActionsProps {
     venda: Venda;

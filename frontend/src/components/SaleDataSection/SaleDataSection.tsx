@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useState, type JSX } from "react";
 
-import type { ClienteResumo, VendedorResumo, } from "../../types/venda";
+import type { ClienteResumo, VendedorResumo, } from "../../types/sales";
 import {
     inputSx,
     primaryButtonSx,

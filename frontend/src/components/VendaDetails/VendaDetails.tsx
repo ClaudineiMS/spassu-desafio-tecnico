@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { Venda } from "../../types/venda";
+import type { Venda } from "../../types/sales";
 import {
     calcularComissaoItem,
     calcularQuantidadeTotal,

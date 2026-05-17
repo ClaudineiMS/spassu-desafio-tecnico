@@ -6,7 +6,7 @@ import { LoadingState } from "../components/LoadingState/LoadingState";
 import { SaleDataSection } from "../components/SaleDataSection/SaleDataSection";
 import { SaleProductSection } from "../components/SaleProductSection/SaleProductSection";
 import { useSaleForm } from "./useSaleForm";
-import type { Venda } from "../types/venda";
+import type { Venda } from "../types/sales";
 
 interface SaleFormPageProps {
     onCancel: () => void;

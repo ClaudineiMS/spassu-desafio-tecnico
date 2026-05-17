@@ -1,6 +1,6 @@
 import { api } from "./api/api";
 
-import type { PaginatedResponse, ProdutoResumo } from "../types/venda";
+import type { PaginatedResponse, ProdutoResumo } from "../types/sales";
 
 type ProdutosApiResponse = ProdutoResumo[] | PaginatedResponse<ProdutoResumo>;
 

@@ -1,4 +1,4 @@
-import type { Venda } from "../types/venda";
+import type { Venda } from "../types/sales";
 
 type ItemVenda = Venda["itens"][number];
 

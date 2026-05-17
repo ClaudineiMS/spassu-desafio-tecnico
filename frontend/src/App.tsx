@@ -7,7 +7,7 @@ import { AppHeader } from "./components/AppHeader/AppHeader";
 import { SideMenu } from "./components/SideMenu/SideMenu";
 import { SaleFormPage } from "./hooks/SaleFormPage";
 import { VendasPage } from "./pages/Vendas/VendasPage";
-import type { Venda } from "./types/venda";
+import type { Venda } from "./types/sales";
 import { CommissionsPage } from "./pages/Comissoes/CommissionsPage";
 
 function App(): JSX.Element {

@@ -1,7 +1,7 @@
 import { Autocomplete, Box, Button, TextField, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProdutoResumo } from "../../types/venda";
+import type { ProdutoResumo } from "../../types/sales";
 import type { SaleItem } from "../../hooks/useSaleForm";
 import {
     inputSx,

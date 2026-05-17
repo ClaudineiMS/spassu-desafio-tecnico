@@ -8,7 +8,7 @@ import { VirtualizedTable } from "../../components/DataTable/VirtualizedTable";
 import type { VirtualizedTableColumn } from "../../components/DataTable/VirtualizedTable";
 import { ErrorState } from "../../components/ErrorState/ErrorState";
 import { LoadingState } from "../../components/LoadingState/LoadingState";
-import type { Venda } from "../../types/venda";
+import type { Venda } from "../../types/sales";
 import { VendaDetails } from "../../components/VendaDetails/VendaDetails";
 import { VendaRowActions } from "../../components/VendaRowActions/VendaRowActions";
 import { useVendas } from "../../hooks/useVendas";

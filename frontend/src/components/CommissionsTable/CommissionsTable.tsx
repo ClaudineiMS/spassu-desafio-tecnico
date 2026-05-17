@@ -3,7 +3,7 @@ import type { JSX } from "react";
 
 import { VirtualizedTable } from "../DataTable/VirtualizedTable";
 import type { VirtualizedTableColumn } from "../DataTable/VirtualizedTable";
-import type { ComissaoVendedor } from "../../types/venda";
+import type { ComissaoVendedor } from "../../types/sales";
 import { formatCurrency } from "../../utils/commissionFormatters";
 import {
     commissionBodyCellSx,

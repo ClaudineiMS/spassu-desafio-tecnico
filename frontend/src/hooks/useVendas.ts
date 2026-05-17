@@ -4,7 +4,7 @@ import {
     listarVendas,
     removerVenda,
 } from "../services/vendasService";
-import type { Venda } from "../types/venda";
+import type { Venda } from "../types/sales";
 
 interface UseVendasResult {
     vendas: Venda[];

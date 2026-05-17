@@ -8,8 +8,8 @@ import type {
     ClienteResumo,
     ProdutoResumo,
     VendedorResumo,
-} from "../types/venda";
-import type { Venda } from "../types/venda";
+} from "../types/sales";
+import type { Venda } from "../types/sales";
 
 export interface SaleItem {
     produto: ProdutoResumo;
