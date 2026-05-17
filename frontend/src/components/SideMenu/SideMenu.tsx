@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
-import cashregister from "../../assets/cashregister.svg"
-import calculator from "../../assets/calculator.svg"
+import cashregister from "../../assets/cashregister.svg";
+import calculator from "../../assets/calculator.svg";
 interface SideMenuProps {
     open: boolean;
     onClose: () => void;
