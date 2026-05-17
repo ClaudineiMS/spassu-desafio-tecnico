@@ -81,7 +81,6 @@ function converterDataParaIso(data: string): string {
 
 export function useSaleForm({ initialSale = null,
 }: UseSaleFormParams = {}): UseSaleFormResult {
-    const [searchTerm, setSearchTerm] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [selectedProductId, setSelectedProductId] = useState<number | "">("");
     const [selectedClientId, setSelectedClientId] = useState<number | "">(
