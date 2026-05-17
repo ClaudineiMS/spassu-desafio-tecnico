@@ -51,7 +51,7 @@ export function DeleteSaleDialog({
             }}
         >
             <DialogTitle sx={dialogTitleSx}>
-                <Typography component="h2" sx={dialogTitleTextSx}>
+                <Typography sx={dialogTitleTextSx}>
                     Remover Venda
                 </Typography>
 
