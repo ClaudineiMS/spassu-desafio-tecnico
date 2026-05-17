@@ -1,6 +1,6 @@
 import { api } from "./api/api";
 
-import type { ComissoesResponse } from "../types/venda";
+import type { ComissoesResponse } from "../types/commissions";
 
 interface ListarComissoesParams {
     dataInicio: string;
@@ -20,6 +20,6 @@ export async function listarComissoes({
             page,
         },
     });
-
+    
     return response.data;
 }
