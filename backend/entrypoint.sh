@@ -20,4 +20,4 @@ if [ "$LOAD_INITIAL_DATA" = "True" ]; then
 fi
 
 echo "Iniciando servidor..."
-exec "$@"
+exec gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}
