@@ -15,6 +15,18 @@ O projeto possui:
 - Testes no backend e no frontend
 
 
+## Aplicação completa:
+
+O frontend está hospedado na **vercel** já o backend está hospeado no **Render**.
+
+
+Frontend: https://spassu-desafio-tecnico.vercel.app/
+
+Backen: https://spassu-desafio-tecnico.onrender.com/api/
+
+Obs: O render não exibe o interface gráfica do django 
+
+
 ## Funcionalidades implementadas
 
 ### Backend
