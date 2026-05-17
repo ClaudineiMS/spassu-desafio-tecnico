@@ -6,8 +6,8 @@ from decimal import Decimal
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
-from vendas.models import ItemVenda, RegraComissao
-
+from vendas.models import ItemVenda, RegraComissao, Venda
+from django.db.models import Count
 logger = logging.getLogger(__name__)
 
 
@@ -148,20 +148,34 @@ def listar_comissoes_por_periodo(data_inicio, data_fim):
 
         totais_por_vendedor[vendedor_id] += valor_comissao
 
-    vendedores = [
-        {
+    vendas_por_vendedor = contar_vendas_por_vendedor(
+        inicio=inicio,
+        fim=fim,
+    )
+
+    vendedores = []
+
+    for vendedor_id, venda_info in vendas_por_vendedor.items():
+        total_comissao = totais_por_vendedor.get(
+            vendedor_id,
+            Decimal('0.00'),
+        )
+
+        vendedores.append({
             'id': vendedor_id,
-            'nome': nomes_por_vendedor[vendedor_id],
-            'total_comissao': total.quantize(Decimal('0.01')),
-        }
-        for vendedor_id, total in totais_por_vendedor.items()
-    ]
+            'nome': venda_info['nome'],
+            'total_vendas': venda_info['total_vendas'],
+            'total_comissao': total_comissao.quantize(Decimal('0.01')),
+        })
 
     vendedores.sort(key=lambda item: item['nome'])
 
     total_geral = sum(
-        item['total_comissao']
-        for item in vendedores
+        (
+            item['total_comissao']
+            for item in vendedores
+        ),
+        Decimal('0.00'),
     )
 
     logger.info(
@@ -172,4 +186,27 @@ def listar_comissoes_por_periodo(data_inicio, data_fim):
     return {
         'vendedores': vendedores,
         'total_geral': total_geral.quantize(Decimal('0.01')),
+    }
+
+def contar_vendas_por_vendedor(inicio, fim):
+    vendas_por_vendedor = (
+        Venda.objects.filter(
+            data_hora__gte=inicio,
+            data_hora__lte=fim,
+        )
+        .values(
+            'vendedor_id',
+            'vendedor__nome',
+        )
+        .annotate(
+            total_vendas=Count('id'),
+        )
+    )
+
+    return {
+        venda['vendedor_id']: {
+            'nome': venda['vendedor__nome'],
+            'total_vendas': venda['total_vendas'],
+        }
+        for venda in vendas_por_vendedor
     }
