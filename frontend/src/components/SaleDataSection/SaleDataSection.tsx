@@ -5,15 +5,19 @@ import {
     Typography,
     Autocomplete
 } from "@mui/material";
-import type { JSX } from "react";
+import { useState, type JSX } from "react";
 
 import type { ClienteResumo, VendedorResumo, } from "../../types/venda";
 import {
     inputSx,
     primaryButtonSx,
     sectionTitleSx,
-    submitButtonSx
+    submitButtonSx,
+    dateTimePickerSlotProps
 } from "../../styles/saleFormStyles";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
 
 interface SaleDataSectionProps {
     saleDate: string;
@@ -43,6 +47,28 @@ function formatCurrency(value: number): string {
     }).format(value);
 }
 
+function getDateTimeValue(value: string): Dayjs | null {
+    if (!value) {
+        return null;
+    }
+
+    const parsedDate = dayjs(value);
+
+    if (!parsedDate.isValid()) {
+        return null;
+    }
+
+    return parsedDate;
+}
+
+function formatDateTimeValue(value: Dayjs | null): string {
+    if (!value || !value.isValid()) {
+        return "";
+    }
+
+    return value.format("YYYY-MM-DDTHH:mm");
+}
+
 export function SaleDataSection({
     saleDate,
     selectedClient,
@@ -63,6 +89,7 @@ export function SaleDataSection({
     onCancel,
     onSubmit,
 }: SaleDataSectionProps): JSX.Element {
+    const [isDateTimePickerOpen, setIsDateTimePickerOpen] = useState(false);
     return (
         <Box
             sx={{
@@ -94,14 +121,29 @@ export function SaleDataSection({
                         Data e Hora da Venda
                     </Typography>
 
-                    <TextField
-                        fullWidth
-                        type="datetime-local"
-                        value={saleDate}
-                        onChange={(event) => {
-                            onSaleDateChange(event.target.value);
+                    <DateTimePicker
+                        open={isDateTimePickerOpen}
+                        onOpen={() => {
+                            setIsDateTimePickerOpen(true);
                         }}
-                        sx={inputSx}
+                        onClose={() => {
+                            setIsDateTimePickerOpen(false);
+                        }}
+                        value={getDateTimeValue(saleDate)}
+                        onChange={(newValue) => {
+                            onSaleDateChange(formatDateTimeValue(newValue));
+                        }}
+                        format="DD/MM/YYYY - HH:mm"
+                        ampm={false}
+                        slotProps={{
+                            ...dateTimePickerSlotProps,
+                            textField: {
+                                ...dateTimePickerSlotProps.textField,
+                                onClick: () => {
+                                    setIsDateTimePickerOpen(true);
+                                },
+                            },
+                        }}
                     />
                 </Box>
 

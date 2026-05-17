@@ -2,16 +2,16 @@ import type { SxProps, Theme } from "@mui/material";
 
 export const inputSx: SxProps<Theme> = {
     "& .MuiOutlinedInput-root": {
-        borderRadius: 0,
+        borderRadius: 1,
         backgroundColor: "#ffffff",
-        minHeight: 43,
     },
     "& .MuiOutlinedInput-input": {
         py: 1.2,
         fontSize: "15px",
+        minHeight: 20
     },
     "& .MuiAutocomplete-inputRoot": {
-        minHeight: "43px !important",
+       
         paddingTop: "0 !important",
         paddingBottom: "0 !important",
     },
@@ -71,5 +71,81 @@ export const submitButtonSx = {
     "&.Mui-disabled": {
         backgroundColor: "#B7D4D8",
         color: "#ffffff",
+    },
+};
+
+export const dateTimeInputSx: SxProps<Theme> = {
+    backgroundColor: "#ffffff",
+    "& .MuiInputBase-root": {
+        backgroundColor: "#ffffff",
+        cursor: "pointer",
+    },
+    "& .MuiOutlinedInput-root": {
+        backgroundColor: "#ffffff",
+    },
+    "& .MuiOutlinedInput-input": {
+        backgroundColor: "#ffffff",
+    },
+    "& input": {
+        backgroundColor: "#ffffff",
+    },
+    "& fieldset": {
+        borderRadius: 1,
+    },
+    "& .MuiInputAdornment-root": {
+        display: "none",
+    },
+    
+};
+
+export const dateTimePickerSlotProps = {
+    textField: {
+        fullWidth: true,
+        size: "small" as const,
+        sx: dateTimeInputSx,
+    },
+    openPickerButton: {
+        sx: {
+            display: "none",
+        },
+    },
+    inputAdornment: {
+        sx: {
+            display: "none",
+        },
+    },
+    day: {
+        sx: {
+            "&.Mui-selected": {
+                backgroundColor: "#00585E !important",
+                color: "#ffffff",
+            },
+            "&.Mui-selected:hover": {
+                backgroundColor: "#00585E !important",
+                color: "#ffffff",
+            },
+            "&:hover": {
+                backgroundColor: "#00585E",
+                color: "#ffffff",
+            },
+            "&.MuiPickersDay-today": {
+                border: "none",
+            },
+        },
+    },
+    desktopPaper: {
+        sx: {
+            "& .MuiMenuItem-root.Mui-selected": {
+                backgroundColor: "#00585E !important",
+                color: "#ffffff",
+            },
+            "& .MuiMenuItem-root.Mui-selected:hover": {
+                backgroundColor: "#00585E !important",
+                color: "#ffffff",
+            },
+            "& .MuiMenuItem-root:hover": {
+                backgroundColor: "#E6F2F3",
+            },
+        },
     },
 };
