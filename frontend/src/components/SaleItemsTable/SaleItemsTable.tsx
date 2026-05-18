@@ -104,6 +104,10 @@ export function SaleItemsTable({
                                     onClick={() => onRemoveItem(item.produto.id)}
                                     sx={{
                                         color: "#C40000",
+                                        "&:hover": {
+                                            color: "#ffffff",
+                                            backgroundColor: "#e75f5f",
+                                        },
                                     }}
                                 >
                                     <DeleteIcon fontSize="small" />

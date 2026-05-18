@@ -89,7 +89,13 @@ export function VendaRowActions({
                     aria-label="Excluir venda"
                     size="small"
                     onClick={() => onDeleteSale(venda.id)}
-                    sx={{ color: "#C40000" }}
+                    sx={{
+                        color: "#C40000",
+                        "&:hover": {
+                            color: "#ffffff",
+                            backgroundColor: "#e75f5f",
+                        },
+                    }}
                 >
                     <DeleteIcon fontSize="small" />
                 </IconButton>
