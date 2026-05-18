@@ -323,3 +323,8 @@ Iniciei o desenvolvimento pelo backend, estruturando primeiro os models, depois 
 Por se tratar de um desafio técnico com prazo reduzido, algumas melhorias que eu gostaria de implementar ficaram de fora. Tanto no backend quanto no frontend, eu gostaria de ter aumentado a cobertura de testes para contemplar mais cenários da aplicação.
 
 Especificamente no frontend, também gostaria de realizar algumas melhorias na tela de nova venda e atualização de venda. Apesar de funcional, ainda existem pontos que poderiam ser otimizados, como a redução de algumas requisições desnecessárias ao backend, principalmente durante o carregamento e preenchimento dos dados do formulário. Além disso, eu gostaria de componentizar ainda mais algumas partes da interface e reduzir a complexidade de determinados hooks, deixando a manutenção do código mais simples e a separação de responsabilidades ainda mais clara.
+
+
+## Documentação complementar
+
+[Visualizar documentação complementar](./docs/Documentação_complementar.pdf)
