@@ -10,8 +10,8 @@ O projeto possui:
 - Frontend em **React**, **Vite**, **TypeScript** e **Material UI**
 - Banco de dados **SQLite**
 - Documentação automática da API com Swagger
-- Docker e Docker Compose para execução padronizada
-- Carga inicial do banco de dados configurável via `.env`
+- Docker e Docker Compose
+- Configuração do sistema por `.env`
 - Testes no backend e no frontend
 
 
@@ -26,16 +26,6 @@ Backen: https://spassu-desafio-tecnico.onrender.com/api/
 
 Obs: O Render não exibe a interface gráfica do Django. Além disso, como o backend está hospedado em um serviço gratuito, recomendo acessar primeiro o link do backend para que o Render inicialize o serviço. Depois disso, acesse o frontend
 
-
-## Tecnologias utilizadas
-
-### Backend
-
-- Python 3.12, Django, Django REST Framework, drf-spectacular, django-cors-headers, SQLite, Docker, Docker Compose
-
-### Frontend
-
-- React, Vite, TypeScript, Material UI, MUI X Date Pickers, Axios, React Virtuoso, ESLint, Jest
 
 ## Pré-requisitos
 
