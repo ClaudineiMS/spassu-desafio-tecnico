@@ -27,6 +27,10 @@ function App(): JSX.Element {
     function handleNavigate(title: string): void {
         setPageTitle(title);
         setIsMenuOpen(false);
+
+        if (title === "Vendas" || title === "Comissões") {
+            setSaleToEdit(null);
+        }
     }
 
     function handleCreateSale(): void {
