@@ -24,8 +24,7 @@ Frontend: https://spassu-desafio-tecnico.vercel.app/
 
 Backen: https://spassu-desafio-tecnico.onrender.com/api/
 
-Obs: O render não exibe o interface gráfica do django 
-
+Obs: O Render não exibe a interface gráfica do Django. Além disso, como o backend está hospedado em um serviço gratuito, recomendo acessar primeiro o link do backend para que o Render inicialize o serviço. Depois disso, acesse o frontend
 
 ## Funcionalidades implementadas
 
