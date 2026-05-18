@@ -26,49 +26,6 @@ Backen: https://spassu-desafio-tecnico.onrender.com/api/
 
 Obs: O Render não exibe a interface gráfica do Django. Além disso, como o backend está hospedado em um serviço gratuito, recomendo acessar primeiro o link do backend para que o Render inicialize o serviço. Depois disso, acesse o frontend
 
-## Funcionalidades implementadas
-
-### Backend
-
-- CRUD de vendedores
-- CRUD de clientes
-- CRUD de produtos
-- CRUD de vendas
-- Cadastro de vendas com um ou mais produtos
-- Cadastro de regras de comissão por dia da semana
-- Cálculo de comissão considerando:
-  - percentual de comissão do produto
-  - valor unitário do produto
-  - quantidade vendida
-  - regra mínima e máxima de comissão por dia da semana
-- Relatório de comissões por vendedor em um período
-- Total de vendas por vendedor no relatório de comissões
-- Total geral de comissões no período
-- API REST com Django REST Framework
-- Documentação Swagger da API
-- Paginação global nas APIs
-- Limite de chamadas por usuário anônimo e autenticado
-- Logs de operações da aplicação - diretório de logs
-- Logs dos testes automatizados  - diretório de logs
-- Testes automatizados de services e APIs
-- Django Admin para gerenciamento dos dados
-
-### Frontend
-
-- Listagem de vendas
-- Cadastro de vendas
-- Edição de vendas
-- Remoção de vendas com modal de confirmação
-- Visualização dos detalhes da venda
-- Busca server-side para clientes, vendedores e produtos
-- Relatório de comissões por período
-- Filtro por data no relatório de comissões
-- Exibição do total de vendas por vendedor
-- Exibição do total geral de comissões
-- Notificações de confirmação
-- Tabela listando comissões e vendas
-- Integração com API do backend via variável de ambiente
-
 
 ## Tecnologias utilizadas
 
@@ -286,15 +243,6 @@ No frontend os testes unitários podem ser executados usando:
 npm run test
 ```
 
-## Banco de dados
-
-```env
-DB_ENGINE=sqlite
-SQLITE_NAME=db.sqlite3
-```
-
-Define o banco utilizado pela aplicação. Atualmente, o projeto está configurado para usar SQLite.
-
 ## Carga inicial do banco
 
 ```env
@@ -362,15 +310,6 @@ A aplicação foi organizada com separação de responsabilidades:
 - `management/commands`: comandos customizados, como carga inicial
 - `entrypoints.sh`: script com o código para executar as configurações automaticas ao subir a aplicação.
 
-Principais decisões:
-
-- Regra de comissão separada em service
-- Logs separados em signals
-- Testes organizados com `LoggedTestCase`
-- Documentação da API customizada com drf-spectacular
-- Paginação global configurável por `.env`
-- Configuração centralizada por variáveis de ambiente
-
 
 ## Frontend
 
@@ -384,11 +323,3 @@ O frontend foi organizado em:
 - `hooks`: hooks personalizados 
 - `utils`: funções utilitárias
 
-Principais decisões:
-
-- Uso de Material UI para interface
-- Uso de TypeScript para melhor segurança
-- Services separados para comunicação com a API
-- Busca server-side para lidar com grandes volumes de dados
-- Componentização de tabela, filtros, mensagens e modais
-- Uso de tabela virtualizada para melhor performance
