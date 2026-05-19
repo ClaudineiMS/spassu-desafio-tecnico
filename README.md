@@ -31,7 +31,7 @@ Obs: O Render não exibe a interface gráfica do Django. Além disso, como o bac
 
 Para executar o projeto localmente, é necessário ter instalado:
 
-- Python 3.12 ou superior, pip, venv, Node.js, npm
+- Python **3.10** ou superior, pip, venv, Node.js **v26.1.0**, npm
 - Docker - Opcional
 - Docker Compose - Opcional
 
